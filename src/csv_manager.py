@@ -21,6 +21,6 @@ def save_data(name, data_list):
         df = pd.DataFrame(data_list)
         file_path = os.path.join(DATA_DIR, f"{name}.csv")
         df.to_csv(file_path, index=False, encoding='utf-8')
-        print(f"💾 {name}.csv erfolgreich gespeichert ({len(df)} Zeilen).")
+        print(f"{name}.csv erfolgreich gespeichert ({len(df)} Zeilen).")
     except Exception as e:
         print(f"Fehler beim Speichern von {name}: {e}")

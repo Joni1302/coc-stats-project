@@ -23,7 +23,7 @@ async def fetch_all_data():
         await client.login(email=COC_EMAIL, password=COC_PASSWORD)
         
         # --- TEIL 1: SPIELER DATEN ---
-        print(f"📡 Hole Daten für Spieler {MY_PLAYER_TAG}...")
+        print(f"Hole Daten für Spieler {MY_PLAYER_TAG}...")
         player = await client.get_player(MY_PLAYER_TAG)
         
         # 1.1 Basis Info
@@ -81,7 +81,7 @@ async def fetch_all_data():
 
         # --- TEIL 2: CLAN DATEN ---
         if player.clan:
-            print(f"🏰 Hole Daten für Clan {player.clan.tag}...")
+            print(f"Hole Daten für Clan {player.clan.tag}...")
             clan = await client.get_clan(player.clan.tag)
             
             # Safe Access für Clan Attribute
@@ -124,7 +124,7 @@ async def fetch_all_data():
                 })
 
             # # 2.3 Kriegslog (AUSGEKLAMMERT)
-            # print("⚠️ Kriegslog-Abruf wegen Fehler temporär deaktiviert.")
+            # print("Kriegslog-Abruf wegen Fehler temporär deaktiviert.")
 
             # 2.4 Raid Seasons (Clanstadt)
             try:
@@ -140,12 +140,12 @@ async def fetch_all_data():
                             "offensive_reward": raid.offensive_reward
                         })
                 else:
-                    print("⚠️ Raid Log Funktion nicht verfügbar.")
+                    print("Raid Log Funktion nicht verfügbar.")
             except Exception as e:
-                print(f"⚠️ Konnte Raid Log nicht laden: {e}")
+                print(f"Konnte Raid Log nicht laden: {e}")
 
     except Exception as e:
-        print(f"❌ Kritisches Problem beim Datenabruf: {e}")
+        print(f"Kritisches Problem beim Datenabruf: {e}")
         import traceback
         traceback.print_exc()
     finally:

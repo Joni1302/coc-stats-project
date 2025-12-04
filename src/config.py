@@ -5,17 +5,19 @@ from dotenv import load_dotenv
 load_dotenv() 
 
 # --- COC AUTHENTIFIZIERUNG ---
-# Wichtig: Wir prüfen, ob die Variablen existieren, andernfalls wird ein Fehler ausgelöst.
 COC_EMAIL = os.getenv("COC_EMAIL")
 if not COC_EMAIL:
-    raise ValueError("COC_EMAIL fehlt in der .env Datei.")
+    # Optionaler Fallback für Token-Login (falls du das nutzt)
+    if not os.getenv("COC_API_TOKEN"):
+         raise ValueError("COC_EMAIL (oder Token) fehlt in der .env Datei.")
 
 COC_PASSWORD = os.getenv("COC_PASSWORD")
-if not COC_PASSWORD:
-    raise ValueError("COC_PASSWORD fehlt in der .env Datei.")
+# API Token Check
+COC_TOKEN = os.getenv("COC_API_TOKEN")
 
 # --- PERSÖNLICHE KONFIGURATION ---
-# Wir holen den Spieler-Tag
 MY_PLAYER_TAG = os.getenv("MY_PLAYER_TAG")
 if not MY_PLAYER_TAG:
     raise ValueError("MY_PLAYER_TAG fehlt in der .env Datei.")
+
+# HINWEIS: MY_CLAN_TAG wurde entfernt, da wir diesen dynamisch laden!

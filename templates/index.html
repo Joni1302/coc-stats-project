@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Startseite - Joni's CoC Dashboard{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 text-center mb-5">
+        
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="hero-logo">
+        
+        <h1 class="display-4 fw-bold">Willkommen, Häuptling!</h1>
+        <p class="lead text-muted">Dies ist mein persönlicher Clash of Clans Tracker. <br>Analysiere Fortschritt, Kriege und die Zenit-Clan-Historie.</p>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        
+        <a href="/stats" class="custom-card">
+            <div class="d-flex align-items-center">
+                <div class="icon-box"><i class="fa-solid fa-chart-line"></i></div>
+                <div>
+                    <div class="card-title">Meine Statistiken</div>
+                    <div class="card-desc">Trophäen-Verlauf, Ressourcen & Helden</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-angles-right text-muted"></i>
+        </a>
+
+        <a href="#" class="custom-card">
+            <div class="d-flex align-items-center">
+                <div class="icon-box"><i class="fa-solid fa-shield-halved"></i></div>
+                <div>
+                    <div class="card-title">Clan Übersicht</div>
+                    <div class="card-desc">Mitglieder, Spenden & Aktivität</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-angles-right text-muted"></i>
+        </a>
+
+        <a href="#" class="custom-card">
+            <div class="d-flex align-items-center">
+                <div class="icon-box"><i class="fa-solid fa-newspaper"></i></div>
+                <div>
+                    <div class="card-title">Blog & Updates</div>
+                    <div class="card-desc">Neuigkeiten zum Projekt</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-angles-right text-muted"></i>
+        </a>
+
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <h3 class="border-bottom pb-2 mb-4 border-secondary">Neueste Updates</h3>
+        <div class="stats-container">
+            <h5>Projekt gestartet 🚀</h5>
+            <p class="text-muted mb-0">Die erste Version des Dashboards ist online. Wir ziehen jetzt Daten direkt über die API.</p>
+            <small class="text-accent">04.12.2025</small>
+        </div>
+    </div>
+</div>
+{% endblock %}
