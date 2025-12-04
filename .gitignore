@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Ignoriere alle generierten Daten-Dateien im 'data' Ordner
+data/
+
 # Distribution / packaging
 .Python
 build/

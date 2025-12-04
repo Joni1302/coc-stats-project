@@ -1,0 +1,5 @@
+coc.py
+pandas
+matplotlib
+python-dotenv
+asyncio
