@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Blog & News - Joni's CoC Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-12 mb-4">
+        <h1 class="display-4 fw-bold"><i class="fa-solid fa-newspaper me-3 text-accent"></i>Blog & Updates</h1>
+        <p class="text-muted lead">Neuigkeiten rund um den Clan, das Spiel und dieses Dashboard.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        
+        {% for post in posts %}
+        <div class="stats-container mb-4 p-4">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                    <span class="badge bg-secondary mb-2">{{ post.category }}</span>
+                    <h2 class="h4 fw-bold text-white mb-1">{{ post.title }}</h2>
+                </div>
+                <small class="text-muted"><i class="fa-regular fa-calendar me-1"></i> {{ post.date }}</small>
+            </div>
+            
+            <p class="text-muted mt-3" style="line-height: 1.6;">
+                {{ post.content }}
+            </p>
+            
+            <div class="mt-3 pt-3 border-top border-secondary d-flex justify-content-between align-items-center">
+                <small class="text-accent fw-bold">Verfasst von {{ post.author }}</small>
+                <button class="btn btn-sm btn-outline-light rounded-pill px-3">Weiterlesen</button>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="text-center mt-5 mb-5">
+            <p class="text-muted fst-italic">Keine weiteren Einträge vorhanden.</p>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="stats-container mb-4">
+            <h5 class="fw-bold text-white mb-3">Über diesen Blog</h5>
+            <p class="text-muted small">
+                Hier poste ich regelmäßig Updates zu meinem Account-Fortschritt, wichtigen Clan-Ereignissen (wie CWL Aufstieg) und neuen Features auf dieser Webseite.
+            </p>
+        </div>
+
+        <div class="stats-container">
+            <h5 class="fw-bold text-white mb-3">Kategorien</h5>
+            <div class="d-flex flex-wrap gap-2">
+                <span class="badge bg-dark border border-secondary p-2">Allgemein</span>
+                <span class="badge bg-dark border border-secondary p-2">Clan War League</span>
+                <span class="badge bg-dark border border-secondary p-2">Entwicklung</span>
+                <span class="badge bg-dark border border-secondary p-2">Strategie</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

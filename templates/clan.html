@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}Clan Übersicht - Joni's CoC Dashboard{% endblock %}
+
+{% block content %}
+
+    {% if clan %}
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-9">
+            <h1 class="display-4 fw-bold">
+                {{ clan.name }} 
+                <span class="badge bg-warning text-dark fs-4 align-middle ms-2">Lvl {{ clan.level }}</span>
+            </h1>
+            <p class="text-muted lead mb-0">Tag: <span class="text-accent">{{ clan.tag }}</span></p>
+        </div>
+        
+        <div class="col-md-3 text-md-end">
+            {% if clan.badge_url %}
+                <img src="{{ clan.badge_url }}" alt="Clan Wappen" class="img-fluid" style="max-height: 120px; filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));">
+            {% else %}
+                <i class="fa-solid fa-shield-cat text-muted" style="font-size: 3rem;"></i>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-lg-6 mb-4">
+            <div class="stats-container h-100">
+                <h4 class="text-accent mb-3"><i class="fa-solid fa-scroll me-2"></i>Clan Beschreibung</h4>
+                <p class="mb-0" style="white-space: pre-line; color: #ddd;">
+                    {{ clan.description | safe }}
+                </p>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <div class="custom-card text-center py-3 mb-0 h-100 flex-column justify-content-center">
+                        <div class="icon-box mb-2 me-0"><i class="fa-solid fa-users"></i></div>
+                        <h3 class="fw-bold mb-0">{{ clan.members_count }}/50</h3>
+                        <small class="text-muted">Mitglieder</small>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="custom-card text-center py-3 mb-0 h-100 flex-column justify-content-center">
+                        <div class="icon-box mb-2 me-0"><i class="fa-solid fa-trophy"></i></div>
+                        <h3 class="fw-bold mb-0">{{ clan.points }}</h3>
+                        <small class="text-muted">Clan Punkte</small>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="custom-card text-center py-3 mb-0 h-100 flex-column justify-content-center">
+                        <div class="icon-box mb-2 me-0"><i class="fa-solid fa-lock"></i></div>
+                        <h3 class="fw-bold mb-0">{{ clan.required_trophies }}</h3>
+                        <small class="text-muted">Benötigt</small>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="custom-card text-center py-3 mb-0 h-100 flex-column justify-content-center">
+                        <div class="icon-box mb-2 me-0"><i class="fa-solid fa-door-open"></i></div>
+                        <h5 class="fw-bold mb-0 text-uppercase mt-1">{{ clan.type }}</h5>
+                        <small class="text-muted">Status</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h3 class="border-bottom pb-2 mb-4 mt-4 border-secondary">Liga & Kriegs-Performance</h3>
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div class="stats-container text-center h-100 d-flex flex-column justify-content-center">
+                <h5 class="text-muted mb-3">Kriegsliga (CWL)</h5>
+                <h4 class="fw-bold text-warning mb-0">{{ clan.war_league }}</h4>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-3">
+            <div class="stats-container text-center h-100 d-flex flex-column justify-content-center">
+                <h5 class="text-muted mb-3">Clanstadt Liga</h5>
+                <h4 class="fw-bold text-info">{{ clan.capital_league }}</h4>
+                <small class="text-muted mt-2">Punkte: {{ clan.capital_points }}</small>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-3">
+            <div class="stats-container h-100">
+                <h5 class="text-muted mb-3 text-center">Kriegsstatistik</h5>
+                <div class="d-flex justify-content-between border-bottom border-secondary pb-2 mb-2">
+                    <span>Siege:</span>
+                    <span class="fw-bold text-success">{{ clan.war_wins }}</span>
+                </div>
+                <div class="d-flex justify-content-between border-bottom border-secondary pb-2 mb-2">
+                    <span>Serie:</span>
+                    <span class="fw-bold text-warning">{{ clan.war_win_streak }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span>Log öffentlich:</span>
+                    <span class="fw-bold">{{ "Ja" if clan.is_war_log_public else "Nein" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h3 class="border-bottom pb-2 mb-4 mt-5 border-secondary">
+        <i class="fa-solid fa-list-ol me-2"></i>Mitglieder-Rangliste
+    </h3>
+    
+    <div class="stats-container p-0">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle mb-0">
+                <thead>
+                    <tr class="text-muted text-uppercase small">
+                        <th scope="col" class="ps-4">#</th>
+                        <th scope="col">Spieler</th>
+                        <th scope="col">Rolle</th>
+                        <th scope="col" class="text-end pe-4">Trophäen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in members %}
+                    <tr>
+                        <td class="ps-4 text-muted fw-bold" style="width: 50px;">{{ loop.index }}.</td>
+                        
+                        <td>
+                            <div class="fw-bold text-white" style="font-size: 1.1rem;">
+                                {% if member.league == 'Legend League' %}
+                                    <span class="text-primary me-1">🟣</span>
+                                {% else %}
+                                    <span class="text-muted me-1">⚪</span>
+                                {% endif %}
+                                {{ member.name }}
+                            </div>
+                            <small class="text-muted" style="font-size: 0.8rem;">{{ member.tag }}</small>
+                        </td>
+                        
+                        <td>
+                            {% if member.role == 'leader' %}
+                                <span class="badge bg-danger">Anführer</span>
+                            {% elif member.role == 'coLeader' or member.role == 'co_leader' %}
+                                <span class="badge bg-danger bg-opacity-75">Vize</span>
+                            {% elif member.role == 'admin' or member.role == 'elder' %}
+                                <span class="badge bg-secondary">Ältester</span>
+                            {% else %}
+                                <span class="text-muted small">Mitglied</span>
+                            {% endif %}
+                        </td>
+                        
+                        <td class="text-end pe-4">
+                            <span class="badge text-dark fw-bold d-inline-flex align-items-center" 
+                                  style="background-color: #f1c40f; font-size: 1rem; min-width: 80px; justify-content: center;">
+                                {{ member.trophies }} <i class="fa-solid fa-trophy ms-2"></i>
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="alert alert-warning">
+        Keine Clan-Daten gefunden. Bitte führe <code>main.py</code> aus und stelle sicher, dass du in einem Clan bist.
+    </div>
+    {% endif %}
+
+{% endblock %}

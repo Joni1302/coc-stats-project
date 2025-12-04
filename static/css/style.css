@@ -152,3 +152,17 @@ body {
 .text-warning {
     color: #f1c40f !important; /* Gold für Trophäen */
 }
+
+/* Neuer Hover-Effekt für verlinkte Boxen (wie den Blog-Teaser) */
+.hover-effect {
+    transition: transform 0.2s, border-color 0.2s;
+    display: block; /* Wichtig für a-Tags */
+    text-decoration: none; /* Unterstreichung weg */
+    color: inherit; /* Textfarbe behalten */
+}
+
+.hover-effect:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-color);
+    color: inherit; /* Textfarbe behalten */
+}

@@ -3,10 +3,32 @@
 {% block title %}Statistiken - Joni's CoC Dashboard{% endblock %}
 
 {% block content %}
-    <h2><i class="fa-solid fa-chart-pie me-2"></i>Live Statistiken</h2>
-    <p class="text-muted">Hier werden bald deine Trophäen-Graphen erscheinen.</p>
+    <h2><i class="fa-solid fa-chart-pie me-2"></i>Trophäen-Historie</h2>
+    <p class="text-muted">Analyse des Trophäenverlaufs deines Accounts über alle Datenpunkte.</p>
     
-    <div class="stats-container mt-4" style="height: 400px; display: flex; align-items: center; justify-content: center;">
-        <span class="text-muted">Diagramm wird geladen... (Hier kommt Matplotlib/Plotly rein)</span>
+    <div class="stats-container mt-4 p-0">
+        
+        <table class="table table-dark table-hover mb-0">
+            <thead>
+                <tr>
+                    <th scope="col" class="text-accent">Datum & Uhrzeit</th>
+                    <th scope="col" class="text-accent">Trophäen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in trophy_history %}
+                <tr>
+                    <td>{{ entry.date }}</td>
+                    <td class="fw-bold text-warning"><i class="fa-solid fa-trophy me-2"></i>{{ entry.trophies }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if not trophy_history %}
+            <div class="p-4 text-center text-muted">
+                Keine historischen Daten in der Datenbank gefunden. Bitte führe 'main.py' aus, um Daten zu sammeln.
+            </div>
+        {% endif %}
     </div>
 {% endblock %}

@@ -91,6 +91,7 @@ async def fetch_all_data():
             results["clan_info"] = {
                 "tag": clan.tag,
                 "name": clan.name,
+                "badge_url": clan.badge.medium,
                 "level": clan.level,
                 "points": clan.points,
                 "builder_points": clan.builder_base_points,
