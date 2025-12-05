@@ -53,9 +53,10 @@ async def fetch_all_data():
         all_items.extend([(x, "Troop") for x in player.troops])
         all_items.extend([(x, "Hero") for x in player.heroes])
         all_items.extend([(x, "Spell") for x in player.spells])
-        pets = getattr(player, "hero_pets", []) 
-        if pets:
-             all_items.extend([(x, "Pet") for x in pets])
+        
+        # FIX: Pets explizit abrufen (Prüft auf 'pets' UND 'hero_pets')
+        # Das stellt sicher, dass wir sie finden, egal wie die coc.py Version sie nennt
+        pets = getattr(player, "pets", []) or getattr(player, "hero_pets", [])
         
         for item, type_label in all_items:
             is_home = getattr(item, "is_home_base", True)

@@ -1,18 +1,26 @@
 /* static/css/style.css */
 
+/* --- 1. CLASH FONT LADEN --- */
+@font-face {
+    font-family: 'ClashFont';
+    src: url('../fonts/Clash_Font.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 :root {
-    --bg-color: #0f0f0f;         /* Sehr dunkles Schwarz */
-    --card-bg: #1a1a1a;          /* Dunkelgrau für die Boxen */
+    --bg-color: #0f0f0f;         
+    --card-bg: #1a1a1a;          
     --text-main: #ffffff;
     --text-muted: #b0b0b0;
-    --accent-color: #ff4747;     /* Ein Rot/Orange Ton wie im Logo */
+    --accent-color: #ff4747;     
     --accent-hover: #ff6b6b;
 }
 
 body {
     background-color: var(--bg-color);
     color: var(--text-main);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'ClashFont', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Navbar / Banner Styling */
@@ -23,40 +31,30 @@ body {
 }
 
 .navbar-brand img {
-    height: 50px; /* Logo Größe */
+    height: 50px; 
     margin-right: 10px;
 }
 
-/* 2. Die Buttons stylen (Pillen) */
+/* Buttons */
 .nav-link {
     background-color: #2c2c2c; 
     color: var(--text-main) !important;
-    
-    /* Form: Rund und gepolstert */
     border-radius: 50px;       
-    
-    /* FIX: PADDING: Vertikalen Abstand reduzieren, damit der Button kleiner wird */
-    padding: 4px 20px !important; /* Von 6px auf 4px oben/unten reduziert */
-    
-    /* MARGIN: Abstand zwischen den Buttons (klein gehalten) */
-    margin: 3px 5px; /* Von 5px auf 3px oben/unten reduziert */
-    
-    /* Text-Style */
+    padding: 4px 20px !important; 
+    margin: 3px 5px; 
     font-weight: 600;
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    
-    /* Animation */
     transition: all 0.3s ease;
     border: 1px solid transparent; 
 }
 
 .nav-link:hover {
-    background-color: var(--accent-color); /* Wird Orange/Rot */
+    background-color: var(--accent-color);
     color: white !important;
-    transform: translateY(-2px); /* Bewegt sich leicht nach oben */
-    box-shadow: 0 4px 15px rgba(255, 71, 71, 0.3); /* Leuchtender Schatten */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 71, 71, 0.3);
 }
 
 .nav-link.active {
@@ -64,7 +62,7 @@ body {
     color: var(--bg-color) !important;
 }
 
-/* Modern Card Design (wie im Zenit Screenshot) */
+/* Cards */
 .custom-card {
     background-color: var(--card-bg);
     border-radius: 12px;
@@ -102,7 +100,6 @@ body {
     color: var(--text-muted);
 }
 
-/* Stats Container für Diagramme später */
 .stats-container {
     background-color: var(--card-bg);
     border-radius: 15px;
@@ -110,59 +107,168 @@ body {
     border: 1px solid #333;
 }
 
-/* Hero Logo auf der Startseite */
 .hero-logo {
-    max-width: 180px;       /* Nicht zu riesig, aber präsent */
+    max-width: 180px;      
     height: auto;
-    margin-bottom: 1.5rem;  /* Abstand zum "Willkommen" Text */
-    border-radius: 50%;     /* Macht es rund (optional, sieht oft gut aus) */
-    box-shadow: 0 0 20px rgba(255, 71, 71, 0.4); /* Leuchter Effekt in Akzentfarbe */
+    margin-bottom: 1.5rem;  
+    border-radius: 50%;    
+    box-shadow: 0 0 20px rgba(255, 71, 71, 0.4); 
     transition: transform 0.3s ease;
 }
 
 .hero-logo:hover {
-    transform: scale(1.05); /* Leichter Zoom beim Drüberfahren */
+    transform: scale(1.05);
 }
 
 .navbar-center-stats {
-    background-color: rgba(0, 0, 0, 0.3); /* Leichter dunkler Hintergrund */
+    background-color: rgba(0, 0, 0, 0.3);
     padding: 5px 20px;
     border-radius: 50px;
     border: 1px solid #333;
     font-size: 0.95rem;
-    white-space: nowrap; /* Verhindert Umbruch */
+    white-space: nowrap; 
     color: #e0e0e0;
     font-family: 'Segoe UI', sans-serif;
     letter-spacing: 0.5px;
-    
-    /* Optional: Leichter "Glassmorphism" Effekt */
     backdrop-filter: blur(5px); 
 }
 
 .navbar-center-stats .separator {
     margin: 0 10px;
-    color: #555; /* Dunkelgrauer Strich */
+    color: #555; 
 }
 
-/* Farben für spezielle Werte */
 .text-accent {
-    color: var(--accent-color); /* Dein Rot/Orange */
+    color: var(--accent-color);
 }
 
 .text-warning {
-    color: #f1c40f !important; /* Gold für Trophäen */
+    color: #f1c40f !important;
 }
 
-/* Neuer Hover-Effekt für verlinkte Boxen (wie den Blog-Teaser) */
 .hover-effect {
     transition: transform 0.2s, border-color 0.2s;
-    display: block; /* Wichtig für a-Tags */
-    text-decoration: none; /* Unterstreichung weg */
-    color: inherit; /* Textfarbe behalten */
+    display: block; 
+    text-decoration: none; 
+    color: inherit; 
 }
 
 .hover-effect:hover {
     transform: translateY(-5px);
     border-color: var(--accent-color);
-    color: inherit; /* Textfarbe behalten */
+    color: inherit; 
 }
+
+.hero-wrapper {
+    display: flex;          
+    flex-wrap: wrap;         
+    gap: 15px;               
+    justify-content: center; 
+    margin-bottom: 30px;
+}
+
+.hero-card {
+    background-color: #1e2124; 
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 15px;
+    width: 200px;           
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    transition: transform 0.2s;
+}
+
+.hero-card:hover {
+    transform: translateY(-5px); 
+}
+
+.level-badge {
+    display: inline-block;
+    background-color: #424242; 
+    color: #ffffff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.5); 
+    border: 1px solid #555;
+    margin-top: 5px;
+}
+
+.level-badge.maxed {
+    background-color: #4CAF50; 
+    background: linear-gradient(180deg, #66bb6a 0%, #43a047 100%); 
+    border-color: #2e7d32;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6); 
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.6); 
+}
+
+/* --- KOMPAKTES GRID LAYOUT UPDATED --- */
+
+.unit-box {
+    width: 60px;
+    height: 60px;
+    background-color: #222;
+    border-radius: 4px;
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.unit-box:hover {
+    transform: scale(1.1);
+    z-index: 10;
+}
+
+.unit-bg {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 4px;
+    border: 1px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #151515;
+}
+
+.unit-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 2px;
+}
+
+.unit-bg.maxed-glow {
+    border: 1px solid #f1c40f; 
+    box-shadow: inset 0 0 5px rgba(241, 196, 15, 0.2);
+}
+
+/* UPDATED LEVEL BADGE FÜR 'Lvl X' TEXT */
+.unit-level-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
+    font-size: 0.65rem;  /* Etwas kleiner für mehr Text */
+    padding: 1px 4px;
+    border-top-left-radius: 4px;
+    font-weight: bold;
+    min-width: 25px;     /* Breiter damit 'Lvl' passt */
+    text-align: center;
+    line-height: 1.2;
+    white-space: nowrap; /* Kein Umbruch */
+}
+
+.unit-level-badge.lvl-max {
+    background-color: #f1c40f;
+    color: black;
+}
+
+/* Farben */
+.bg-purple { background-color: #9b59b6 !important; }
+.bg-orange { background-color: #e67e22 !important; }
+.bg-teal   { background-color: #1abc9c !important; }
+.bg-blue   { background-color: #3498db !important; }
+.bg-red    { background-color: #e74c3c !important; }
+.fa-square { opacity: 0.7; font-size: 0.7em; }

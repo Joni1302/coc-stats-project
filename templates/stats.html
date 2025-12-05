@@ -3,32 +3,159 @@
 {% block title %}Statistiken - Joni's CoC Dashboard{% endblock %}
 
 {% block content %}
-    <h2><i class="fa-solid fa-chart-pie me-2"></i>Trophäen-Historie</h2>
-    <p class="text-muted">Analyse des Trophäenverlaufs deines Accounts über alle Datenpunkte.</p>
-    
-    <div class="stats-container mt-4 p-0">
-        
-        <table class="table table-dark table-hover mb-0">
-            <thead>
-                <tr>
-                    <th scope="col" class="text-accent">Datum & Uhrzeit</th>
-                    <th scope="col" class="text-accent">Trophäen</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for entry in trophy_history %}
-                <tr>
-                    <td>{{ entry.date }}</td>
-                    <td class="fw-bold text-warning"><i class="fa-solid fa-trophy me-2"></i>{{ entry.trophies }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        {% if not trophy_history %}
-            <div class="p-4 text-center text-muted">
-                Keine historischen Daten in der Datenbank gefunden. Bitte führe 'main.py' aus, um Daten zu sammeln.
+<!-- 1. ACCOUNT ÜBERSICHT (NEU) -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="stats-container p-4">
+            <div class="row align-items-center">
+                
+                <!-- Rathaus Bild -->
+                <div class="col-md-3 text-center mb-3 mb-md-0">
+                    <div class="position-relative d-inline-block">
+                        <img src="{{ th_image }}" alt="Town Hall" class="img-fluid" style="max-height: 160px; filter: drop-shadow(0 0 15px rgba(0,0,0,0.6));">
+                        <span class="position-absolute bottom-0 start-50 translate-middle-x badge bg-dark border border-secondary">
+                            TH {{ player.town_hall }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Spieler Details -->
+                <div class="col-md-9">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h2 class="fw-bold text-white mb-0 display-6">{{ player.name }}</h2>
+                            <p class="text-muted font-monospace mb-3">{{ player.tag }}</p>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-warning text-dark fs-6">
+                                <i class="fa-solid fa-trophy me-1"></i> {{ player.trophies }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="row g-3 mt-1">
+                        <div class="col-6 col-sm-3">
+                            <div class="p-2 border border-secondary rounded bg-dark text-center">
+                                <small class="text-muted d-block">XP Level</small>
+                                <span class="fw-bold text-info fs-5">{{ player.exp_level }}</span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-sm-3">
+                            <div class="p-2 border border-secondary rounded bg-dark text-center">
+                                <small class="text-muted d-block">Kriegssterne</small>
+                                <span class="fw-bold text-warning fs-5">{{ player.war_stars }}</span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-sm-3">
+                            <div class="p-2 border border-secondary rounded bg-dark text-center">
+                                <small class="text-muted d-block">Bestmarke Troph.</small>
+                                <span class="fw-bold text-warning fs-5">{{ player.best_trophies }}</span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-sm-3">
+                            <div class="p-2 border border-secondary rounded bg-dark text-center">
+                                <small class="text-muted d-block">Rolle</small>
+                                <span class="fw-bold text-white fs-5 text-capitalize">{{ player.role | replace('_', ' ') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        {% endif %}
+        </div>
     </div>
+</div>
+
+<!-- 2. TROPHÄEN CHART -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h3 class="border-bottom pb-2 mb-4 border-secondary text-white">
+            <i class="fa-solid fa-chart-line me-2 text-accent"></i>Entwicklung
+        </h3>
+        <div class="stats-container p-3" style="position: relative; height: 300px; width: 100%;">
+            <canvas id="trophyChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- 3. TRUPPEN GRID (LEVELS BLOCK HINZUGEFÜGT) -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h3 class="border-bottom pb-2 mb-4 border-secondary text-white">
+            <i class="fa-solid fa-star me-2 text-warning"></i>LEVELS
+        </h3>
+        
+        <div class="stats-container p-4">
+            <div class="col-lg-12">
+                
+                {% with title="HEROES", items=data.heroes, percent=progress.heroes, color="bg-warning" %}
+                    {% include "stats_section_snippet.html" %}
+                {% endwith %}
+
+                {% with title="PETS", items=data.pets, percent=progress.pets, color="bg-teal" %}
+                    {% include "stats_section_snippet.html" %}
+                {% endwith %}
+
+                {% with title="SIEGE MACHINES", items=data.siege, percent=progress.siege, color="bg-red" %}
+                    {% include "stats_section_snippet.html" %}
+                {% endwith %}
+
+                {% with title="ELIXIR TROOPS", items=data.elixir, percent=progress.elixir, color="bg-info" %}
+                    {% include "stats_section_snippet.html" %}
+                {% endwith %}
+
+                {% with title="DARK TROOPS", items=data.dark, percent=progress.dark, color="bg-purple" %}
+                    {% include "stats_section_snippet.html" %}
+                {% endwith %}
+
+                {% with title="SPELLS", items=data.spells, percent=progress.spells, color="bg-blue" %}
+                    {% include "stats_section_snippet.html" %}
+                {% endwith %}
+
+                {% with title="SUPER TROOPS", items=data.super, percent=0, color="bg-orange", hide_progress=True %}
+                    {% include "stats_section_snippet.html" %}
+                {% endwith %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ctx = document.getElementById('trophyChart').getContext('2d');
+    const labels = {{ labels | safe }};
+    const data = {{ values | safe }};
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(255, 71, 71, 0.5)'); 
+    gradient.addColorStop(1, 'rgba(255, 71, 71, 0.0)'); 
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Trophäen',
+                data: data,
+                borderColor: '#ff4747',
+                backgroundColor: gradient,
+                borderWidth: 2,
+                pointRadius: 3,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false, color: '#333' }, ticks: { color: '#888' } },
+                y: { grid: { color: '#333' }, ticks: { color: '#888' } }
+            }
+        }
+    });
+</script>
+
 {% endblock %}
