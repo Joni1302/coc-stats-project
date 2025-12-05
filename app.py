@@ -20,6 +20,9 @@ SIEGE_MACHINES_LIST = [
 
 SUPER_TROOPS_KEYWORDS = ['Super ', 'Sneaky ', 'Rocket ', 'Inferno ', 'Ice Hound']
 
+# Achievement, das ignoriert werden soll
+ACHIEVEMENT_TO_IGNORE = "Keep Your Account Safe!"
+
 @app.context_processor
 def inject_navbar_stats():
     csv_path = os.path.join("data", "player_info.csv")
@@ -83,51 +86,60 @@ def stats():
     
     chart_labels = []
     chart_values = []
+    
+    # Set um zu speichern, welche Tage wir schon haben
+    seen_dates = set()
+
     for row in historical_data:
         try:
             dt = datetime.strptime(row['timestamp'], '%Y-%m-%dT%H:%M:%S.%f')
-            chart_labels.append(dt.strftime('%d.%m.'))
-            chart_values.append(row['trophies'])
+            
+            # Wir erstellen einen String nur für das Datum (ohne Zeit)
+            day_key = dt.strftime('%Y-%m-%d')
+            
+            # Wenn wir diesen Tag noch nicht hatten, fügen wir ihn hinzu
+            if day_key not in seen_dates:
+                seen_dates.add(day_key)
+                
+                # Formatierung für die Anzeige im Chart (Tag.Monat.)
+                chart_labels.append(dt.strftime('%d.%m.'))
+                chart_values.append(row['trophies'])
+            
+            # Falls der Tag schon in seen_dates ist, machen wir nichts (überspringen)
+            
         except: continue
 
-    # 2. Player Info & Rathaus Bild laden
-    # Default Werte (verhindert Fehler, wenn CSV fehlt)
+    # 2. Player Info
     player_info = {
         "name": "Chief", "tag": "#...", "town_hall": 1, 
         "trophies": 0, "exp_level": 0, "war_stars": 0, 
-        "attack_wins": 0, "role": "member"
+        "attack_wins": 0, "role": "member", "best_trophies": 0
     }
     th_image = ""
-    
     info_path = os.path.join("data", "player_info.csv")
     if os.path.exists(info_path):
         try:
             df_i = pd.read_csv(info_path)
             if not df_i.empty:
-                # Echte Daten in das Info-Objekt laden
                 player_info.update(df_i.iloc[0].to_dict())
                 th_image = get_asset_url(player_info.get('town_hall', 1), "town_hall")
-        except Exception as e:
-            print(f"Info Error: {e}")
+        except: pass
 
     # 3. Truppen Kategorisieren
     categories = {
         "heroes": [], "pets": [], "siege": [], "super": [], 
         "dark": [], "spells": [], "elixir": []
     }
-    
     troops_path = os.path.join("data", "player_troops.csv")
     if os.path.exists(troops_path):
         try:
             df = pd.read_csv(troops_path)
             df = df[df['village'] == 'Home']
             items = df.to_dict(orient='records')
-            
             for item in items:
                 name = item['name']
                 dtype = item['type']
                 cat_key = "elixir"
-                
                 if dtype == 'Hero': cat_key = "heroes"
                 elif dtype == 'Pet': cat_key = "pets"
                 elif dtype == 'Spell': cat_key = "spells"
@@ -137,12 +149,11 @@ def stats():
                     elif any(name.startswith(prefix) for prefix in SUPER_TROOPS_KEYWORDS) or name == 'Ice Hound':
                         cat_key = "super"
                     else: cat_key = "elixir"
-                
                 item['image_url'] = get_asset_url(name, cat_key)
                 categories[cat_key].append(item)
-        except Exception as e: print(f"Sort Error: {e}")
+        except: pass
 
-    # 4. Fortschritt berechnen
+    # 4. Fortschritt
     progress = {}
     for key, items in categories.items():
         if not items:
@@ -152,14 +163,26 @@ def stats():
         total_max = sum(item['max_level'] for item in items)
         progress[key] = round((total_curr / total_max) * 100, 1) if total_max > 0 else 0
 
-    # HIER WAR DER FEHLER: 'player=player_info' muss übergeben werden
+    # 5. ERFOLGE LADEN UND FILTERN (NEU)
+    achievements = []
+    ach_path = os.path.join("data", "player_achievements.csv")
+    if os.path.exists(ach_path):
+        try:
+            df_a = pd.read_csv(ach_path)
+            # Filtere den unerwünschten Erfolg heraus
+            filtered_df = df_a[df_a['name'] != ACHIEVEMENT_TO_IGNORE]
+            achievements = filtered_df.to_dict(orient='records')
+        except Exception as e:
+            print(f"Achievements Error: {e}")
+
     return render_template("stats.html", 
                            labels=json.dumps(chart_labels), 
                            values=json.dumps(chart_values),
                            data=categories,
                            progress=progress,
-                           player=player_info, # WICHTIG: Das fehlte beim Rendern!
-                           th_image=th_image)
+                           player=player_info,
+                           th_image=th_image,
+                           achievements=achievements)
 
 @app.route("/clan")
 def clan():

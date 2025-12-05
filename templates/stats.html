@@ -123,6 +123,52 @@
     </div>
 </div>
 
+<!-- 4. ERFOLGE (ACHIEVEMENTS) - NEU! -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h3 class="border-bottom pb-2 mb-4 border-secondary text-white">
+            <i class="fa-solid fa-medal me-2 text-success"></i>ERFOLGE
+        </h3>
+        
+        <!-- Scrollbare Liste für Achievements -->
+        <div class="stats-container p-0" style="max-height: 500px; overflow-y: auto;">
+            <div class="list-group list-group-flush bg-transparent">
+                {% for ach in achievements %}
+                <div class="list-group-item bg-transparent border-secondary text-white p-3 d-flex align-items-center justify-content-between hover-effect">
+                    
+                    <!-- Linke Seite: Info -->
+                    <div class="me-3">
+                        <h6 class="fw-bold mb-1 text-accent">{{ ach.name }}</h6>
+                        <p class="text-muted small mb-1">{{ ach.info }}</p>
+                        
+                        <!-- Fortschrittstext -->
+                        <div class="d-flex align-items-center small text-white-50">
+                            {% if ach.completed %}
+                                <i class="fa-solid fa-check-circle text-success me-1"></i> Abgeschlossen
+                            {% else %}
+                                <span>{{ "{:,}".format(ach.value) }} / {{ "{:,}".format(ach.target) }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Rechte Seite: Sterne -->
+                    <div class="text-end" style="min-width: 90px;">
+                        {% for i in range(1, 4) %}
+                            {% if i <= ach.stars %}
+                                <i class="fa-solid fa-star text-warning" style="font-size: 1.1rem; filter: drop-shadow(0 0 5px rgba(241, 196, 15, 0.5));"></i>
+                            {% else %}
+                                <i class="fa-regular fa-star text-muted" style="font-size: 1.1rem; opacity: 0.3;"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     const ctx = document.getElementById('trophyChart').getContext('2d');
     const labels = {{ labels | safe }};
