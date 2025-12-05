@@ -272,3 +272,22 @@ body {
 .bg-blue   { background-color: #3498db !important; }
 .bg-red    { background-color: #e74c3c !important; }
 .fa-square { opacity: 0.7; font-size: 0.7em; }
+
+/* Zusätzliche Anpassungen für den Footer */
+footer small {
+    /* Macht den Text im Footer kleiner als die Standard <small> */
+    font-size: 0.8rem; 
+}
+
+footer a {
+    /* Verhindert die Übernahme von Akzentfarben für Links im Footer */
+    color: var(--text-muted) !important;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+footer a:hover {
+    /* Lässt den Link beim Hover leicht aufhellen */
+    color: var(--text-main) !important;
+    text-decoration: underline;
+}

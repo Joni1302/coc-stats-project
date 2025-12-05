@@ -163,7 +163,7 @@ def stats():
         total_max = sum(item['max_level'] for item in items)
         progress[key] = round((total_curr / total_max) * 100, 1) if total_max > 0 else 0
 
-    # 5. ERFOLGE LADEN UND FILTERN (NEU)
+    # 5. ERFOLGE LADEN UND FILTERN
     achievements = []
     ach_path = os.path.join("data", "player_achievements.csv")
     if os.path.exists(ach_path):
