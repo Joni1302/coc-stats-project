@@ -75,7 +75,7 @@ def get_asset_url(name, category):
 
 @app.route("/stats")
 def stats():
-    # 1. Historie laden
+    # 1. Historie laden (Bleibt gleich)
     conn = get_db_connection()
     try:
         historical_data = conn.execute('SELECT timestamp, trophies FROM player_stats ORDER BY timestamp ASC').fetchall()
@@ -86,46 +86,59 @@ def stats():
     
     chart_labels = []
     chart_values = []
-    
-    # Set um zu speichern, welche Tage wir schon haben
     seen_dates = set()
 
     for row in historical_data:
         try:
             dt = datetime.strptime(row['timestamp'], '%Y-%m-%dT%H:%M:%S.%f')
-            
-            # Wir erstellen einen String nur für das Datum (ohne Zeit)
             day_key = dt.strftime('%Y-%m-%d')
-            
-            # Wenn wir diesen Tag noch nicht hatten, fügen wir ihn hinzu
             if day_key not in seen_dates:
                 seen_dates.add(day_key)
-                
-                # Formatierung für die Anzeige im Chart (Tag.Monat.)
                 chart_labels.append(dt.strftime('%d.%m.'))
                 chart_values.append(row['trophies'])
-            
-            # Falls der Tag schon in seen_dates ist, machen wir nichts (überspringen)
-            
         except: continue
 
-    # 2. Player Info
+    # 2. Player Info & Legenden Stats laden (ERWEITERT)
     player_info = {
         "name": "Chief", "tag": "#...", "town_hall": 1, 
         "trophies": 0, "exp_level": 0, "war_stars": 0, 
-        "attack_wins": 0, "role": "member", "best_trophies": 0
+        "attack_wins": 0, "role": "member", "best_trophies": 0,
+        "current_season_rank": None # Default
     }
-    th_image = ""
+    
+    # Basis Info laden
     info_path = os.path.join("data", "player_info.csv")
     if os.path.exists(info_path):
         try:
             df_i = pd.read_csv(info_path)
             if not df_i.empty:
                 player_info.update(df_i.iloc[0].to_dict())
-                th_image = get_asset_url(player_info.get('town_hall', 1), "town_hall")
         except: pass
 
-    # 3. Truppen Kategorisieren
+    # NEU: Legenden Stats laden
+    legend_path = os.path.join("data", "player_legend_stats.csv")
+    if os.path.exists(legend_path):
+        try:
+            df_l = pd.read_csv(legend_path)
+            if not df_l.empty:
+                # Füge die Legenden-Daten zum player_info Dictionary hinzu
+                player_info.update(df_l.iloc[0].to_dict())
+        except: pass
+
+    # NEU: Liga Logik & Bild
+    th_image = get_asset_url(player_info.get('town_hall', 1), "town_hall")
+    
+    # Logik für Legend League
+    if player_info.get('trophies', 0) > 4800:
+        player_info['league_name'] = "Legend League"
+        # Dateiname aus deinem Upload (Legenden_League.png)
+        player_info['league_image'] = "/static/assets/league/Legend_League.png"
+    else:
+        player_info['league_name'] = "Unranked" # Oder Logik für Titan etc. erweitern
+        player_info['league_image'] = None
+
+
+    # 3. Truppen Kategorisieren (Bleibt gleich)
     categories = {
         "heroes": [], "pets": [], "siege": [], "super": [], 
         "dark": [], "spells": [], "elixir": []
@@ -153,7 +166,7 @@ def stats():
                 categories[cat_key].append(item)
         except: pass
 
-    # 4. Fortschritt
+    # 4. Fortschritt (Bleibt gleich)
     progress = {}
     for key, items in categories.items():
         if not items:
@@ -163,13 +176,12 @@ def stats():
         total_max = sum(item['max_level'] for item in items)
         progress[key] = round((total_curr / total_max) * 100, 1) if total_max > 0 else 0
 
-    # 5. ERFOLGE LADEN UND FILTERN
+    # 5. Erfolge (Bleibt gleich)
     achievements = []
     ach_path = os.path.join("data", "player_achievements.csv")
     if os.path.exists(ach_path):
         try:
             df_a = pd.read_csv(ach_path)
-            # Filtere den unerwünschten Erfolg heraus
             filtered_df = df_a[df_a['name'] != ACHIEVEMENT_TO_IGNORE]
             achievements = filtered_df.to_dict(orient='records')
         except Exception as e:
@@ -186,6 +198,7 @@ def stats():
 
 @app.route("/clan")
 def clan():
+    # 1. Clan Info laden
     csv_info = os.path.join("data", "clan_info.csv")
     clan_data = {}
     if os.path.exists(csv_info):
@@ -197,6 +210,7 @@ def clan():
                      clan_data['description'] = clan_data['description'].replace('\n', '<br>')
         except: pass
 
+    # 2. Mitglieder laden
     csv_members = os.path.join("data", "clan_members.csv")
     members_data = []
     if os.path.exists(csv_members):
@@ -206,15 +220,37 @@ def clan():
             members_data = df_m.to_dict(orient='records')
         except: pass
 
-    return render_template("clan.html", clan=clan_data, members=members_data)
+    # 3. NEU: Aktuellen Krieg laden
+    war_data = {}
+    csv_war = os.path.join("data", "current_war.csv")
+    if os.path.exists(csv_war):
+        try:
+            df_w = pd.read_csv(csv_war)
+            if not df_w.empty:
+                war_data = df_w.iloc[0].to_dict()
+        except: pass
 
-@app.route("/blog")
-def blog():
-    posts = [
-        {"title": "Dashboard V1.0", "date": "04.12.2025", "category": "Update", "content": "Live!", "author": "Joni"},
-        {"title": "Clan Level 16", "date": "01.12.2025", "category": "Clan", "content": "Level Up!", "author": "Leader"}
-    ]
-    return render_template("blog.html", posts=posts)
+    # 4. NEU: CWL Gruppe laden
+    cwl_data = {}
+    csv_cwl = os.path.join("data", "cwl_group.csv")
+    if os.path.exists(csv_cwl):
+        try:
+            df_c = pd.read_csv(csv_cwl)
+            if not df_c.empty:
+                # Wir nehmen hier nur Metadaten aus der ersten Zeile für die Anzeige
+                first_row = df_c.iloc[0]
+                cwl_data = {
+                    "season": first_row.get("season"),
+                    "state": first_row.get("state"),
+                    "clans": df_c.to_dict(orient='records') # Liste aller Clans
+                }
+        except: pass
+
+    return render_template("clan.html", 
+                           clan=clan_data, 
+                           members=members_data, 
+                           war=war_data, 
+                           cwl=cwl_data)
 
 if __name__ == "__main__":
     app.run(debug=True)

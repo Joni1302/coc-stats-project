@@ -66,7 +66,7 @@
             </div>
         </div>
     </div>
-    <h3 class="border-bottom pb-2 mb-4 mt-4 border-secondary">Liga & Kriegs-Performance</h3>
+    <h3 class="border-bottom pb-2 mb-4 border-secondary">Liga & Kriegs-Performance</h3>
     <div class="row">
         <div class="col-md-4 mb-3">
             <div class="stats-container text-center h-100 d-flex flex-column justify-content-center">
@@ -101,6 +101,78 @@
             </div>
         </div>
     </div>
+
+    {% if cwl.season %}
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="stats-container p-0 overflow-hidden border-primary" style="border: 1px solid #0d6efd;">
+                <div class="p-3 text-center" style="background: linear-gradient(90deg, #0d47a1 0%, #1565c0 100%);">
+                    <span class="badge bg-warning text-dark mb-2">CWL Gruppe</span>
+                    <h3 class="text-white fw-bold mb-0">Saison {{ cwl.season }}</h3>
+                </div>
+                
+                <div class="p-4">
+                    <h5 class="text-muted mb-3 text-center text-uppercase small" style="letter-spacing: 1px;">Gruppe & Gegner</h5>
+                    <div class="row g-3 justify-content-center">
+                        {% for c in cwl.clans %}
+                        <div class="col-6 col-md-3">
+                            <div class="p-3 border border-secondary rounded bg-dark text-center h-100 position-relative hover-effect">
+                                
+                                {% if c.clan_tag == clan.tag %}
+                                    <span class="position-absolute top-0 start-50 translate-middle badge bg-success border border-dark">WIR</span>
+                                {% endif %}
+
+                                <img src="{{ c.badge_url }}" alt="Badge" class="mb-2" style="width: 50px; height: 50px; object-fit: contain; filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));">
+                                <h6 class="fw-bold text-white text-truncate mb-1" title="{{ c.clan_name }}">{{ c.clan_name }}</h6>
+                                <small class="text-muted">Lvl {{ c.clan_level }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% elif war.state in ['inWar', 'preparation'] %}
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="stats-container p-0 overflow-hidden position-relative border-danger" style="border-width: 1px; border-style: solid;">
+                
+                <div class="p-3 text-center position-relative" style="background: linear-gradient(90deg, #b71c1c 0%, #d32f2f 100%);">
+                    <span class="badge bg-dark mb-2">Clan Krieg</span>
+                    <h3 class="text-white fw-bold mb-0">
+                        {% if war.state == 'preparation' %}
+                            Vorbereitungstag
+                        {% else %}
+                            Kampftag läuft!
+                        {% endif %}
+                    </h3>
+                    <small class="text-white-50">{{ war.start_time }} - {{ war.end_time }}</small>
+                </div>
+
+                <div class="row g-0 align-items-center py-4 px-2">
+                    <div class="col-5 text-center">
+                        <h4 class="fw-bold text-white mb-1">{{ clan.name }}</h4>
+                        <div class="d-flex justify-content-center align-items-center gap-3">
+                            <div class="text-warning"><i class="fa-solid fa-star fs-5"></i> <span class="fs-4 fw-bold">{{ war.clan_stars }}</span></div>
+                            <div class="text-info"><i class="fa-solid fa-fire fs-5"></i> <span class="fs-4 fw-bold">{{ "%.1f"|format(war.clan_destruction|float) }}%</span></div>
+                        </div>
+                    </div>
+                    <div class="col-2 text-center"><span class="fw-bold fs-2 text-muted fst-italic">VS</span></div>
+                    <div class="col-5 text-center">
+                        <h4 class="fw-bold text-danger mb-1">{{ war.opponent_name }}</h4>
+                        <div class="d-flex justify-content-center align-items-center gap-3">
+                            <div class="text-warning"><span class="fs-4 fw-bold">{{ war.opponent_stars }}</span> <i class="fa-solid fa-star fs-5"></i></div>
+                            <div class="text-info"><span class="fs-4 fw-bold">{{ "%.1f"|format(war.opponent_destruction|float) }}%</span> <i class="fa-solid fa-fire fs-5"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <h3 class="border-bottom pb-2 mb-4 mt-5 border-secondary">
         <i class="fa-solid fa-list-ol me-2"></i>Mitglieder-Rangliste
     </h3>
@@ -120,7 +192,6 @@
                     {% for member in members %}
                     <tr>
                         <td class="ps-4 text-muted fw-bold" style="width: 50px;">{{ loop.index }}.</td>
-                        
                         <td>
                             <div class="fw-bold text-white" style="font-size: 1.1rem;">
                                 {% if member.league == 'Legend League' %}
@@ -132,7 +203,6 @@
                             </div>
                             <small class="text-muted" style="font-size: 0.8rem;">{{ member.tag }}</small>
                         </td>
-                        
                         <td>
                             {% if member.role == 'leader' %}
                                 <span class="badge bg-danger">Anführer</span>
@@ -144,7 +214,6 @@
                                 <span class="text-muted small">Mitglied</span>
                             {% endif %}
                         </td>
-                        
                         <td class="text-end pe-4">
                             <span class="badge text-dark fw-bold d-inline-flex align-items-center" 
                                   style="background-color: #f1c40f; font-size: 1rem; min-width: 80px; justify-content: center;">

@@ -1,25 +1,31 @@
 import coc
 import asyncio
+import traceback
 from src.config import COC_EMAIL, COC_PASSWORD, MY_PLAYER_TAG
 
 async def fetch_all_data():
     """
-    Holt ALLE verfügbaren Daten für Spieler und Clan und gibt sie als
-    strukturiertes Dictionary zurück.
+    Holt Daten für Spieler (inkl. Legenden-Stats), Clan und erweiterte CWL-Infos.
+    Kriegslog wurde entfernt.
     """
     client = coc.Client()
     
     # Ergebnis-Container
     results = {
         "player_info": {},
+        "player_legend_stats": [],
         "player_troops": [],
         "player_achievements": [],
         "clan_info": {},
         "clan_members": [],
-        "clan_capital_raids": [] # Kriegslog wurde entfernt
+        "clan_war_log": [], # Bleibt leer, da deaktiviert
+        "current_war": {},
+        "cwl_group": [],
+        "clan_capital_raids": []
     }
 
     try:
+        # Login
         await client.login(email=COC_EMAIL, password=COC_PASSWORD)
         
         # --- TEIL 1: SPIELER DATEN ---
@@ -48,15 +54,29 @@ async def fetch_all_data():
             "clan_tag": player.clan.tag if player.clan else None
         }
 
-        # 1.2 Truppen, Helden, Zauber, Pets
+        # 1.2 Legenden-Liga Statistiken
+        if player.legend_statistics:
+            ls = player.legend_statistics
+            legend_data = {
+                "legend_trophies": ls.legend_trophies,
+                "current_season_trophies": ls.current_season.trophies if ls.current_season else 0,
+                "current_season_rank": ls.current_season.rank if ls.current_season else 0,
+                "best_season_id": ls.best_season.id if ls.best_season else None,
+                "best_season_rank": ls.best_season.rank if ls.best_season else 0,
+                "best_season_trophies": ls.best_season.trophies if ls.best_season else 0,
+                "previous_season_id": ls.previous_season.id if ls.previous_season else None,
+                "previous_season_rank": ls.previous_season.rank if ls.previous_season else 0,
+                "previous_season_trophies": ls.previous_season.trophies if ls.previous_season else 0
+            }
+            results["player_legend_stats"].append(legend_data)
+
+        # 1.3 Truppen, Helden, Zauber, Pets
         all_items = []
         all_items.extend([(x, "Troop") for x in player.troops])
         all_items.extend([(x, "Hero") for x in player.heroes])
         all_items.extend([(x, "Spell") for x in player.spells])
-        
-        # FIX: Pets explizit abrufen (Prüft auf 'pets' UND 'hero_pets')
-        # Das stellt sicher, dass wir sie finden, egal wie die coc.py Version sie nennt
         pets = getattr(player, "pets", []) or getattr(player, "hero_pets", [])
+        all_items.extend([(x, "Pet") for x in pets]) 
         
         for item, type_label in all_items:
             is_home = getattr(item, "is_home_base", True)
@@ -69,7 +89,7 @@ async def fetch_all_data():
                 "village": "Home" if is_home else "Builder"
             })
 
-        # 1.3 Errungenschaften
+        # 1.4 Errungenschaften
         for ach in player.achievements:
             results["player_achievements"].append({
                 "name": ach.name,
@@ -85,7 +105,6 @@ async def fetch_all_data():
             print(f"Hole Daten für Clan {player.clan.tag}...")
             clan = await client.get_clan(player.clan.tag)
             
-            # Safe Access für Clan Attribute
             capital_league = getattr(clan, "capital_league", None)
             war_league = getattr(clan, "war_league", None)
 
@@ -105,8 +124,8 @@ async def fetch_all_data():
                 "members_count": clan.member_count,
                 "war_win_streak": clan.war_win_streak,
                 "war_wins": clan.war_wins,
-                "war_losses": getattr(clan, "war_losses", None),
-                "war_ties": getattr(clan, "war_ties", None),
+                "war_losses": getattr(clan, "war_losses", 0),
+                "war_ties": getattr(clan, "war_ties", 0),
                 "is_war_log_public": clan.public_war_log
             }
 
@@ -125,30 +144,70 @@ async def fetch_all_data():
                     "league": member.league.name
                 })
 
-            # # 2.3 Kriegslog (AUSGEKLAMMERT)
-            # print("Kriegslog-Abruf wegen Fehler temporär deaktiviert.")
+            # --- TEIL 3: KRIEGE & CWL ---
+            
+            # 3.1 Aktueller Krieg
+            try:
+                war = await client.get_clan_war(clan.tag)
+                if war:
+                    results["current_war"] = {
+                        "state": war.state,
+                        "battle_modifier": war.battle_modifier.name if war.battle_modifier else "None",
+                        "team_size": war.team_size,
+                        "start_time": str(war.start_time),
+                        "end_time": str(war.end_time),
+                        "opponent_name": war.opponent.name if war.opponent else "Unknown",
+                        "opponent_tag": war.opponent.tag if war.opponent else "Unknown",
+                        "clan_stars": war.clan.stars,
+                        "clan_destruction": war.clan.destruction,
+                        "opponent_stars": war.opponent.stars,
+                        "opponent_destruction": war.opponent.destruction
+                    }
+            except coc.PrivateWarLog:
+                print("Aktueller Krieg nicht abrufbar (Kriegslog ist privat).")
+            except Exception as e:
+                print(f"Info: Kein aktiver Krieg gefunden ({e})")
 
-            # 2.4 Raid Seasons (Clanstadt)
+            # 3.2 Kriegslog WURDE ENTFERNT
+
+            # 3.3 CWL Gruppe (Erweitert)
+            try:
+                group = await client.get_league_group(clan.tag)
+                if group:
+                    for clan_in_group in group.clans:
+                        results["cwl_group"].append({
+                            "season": group.season,
+                            "state": group.state,
+                            "rounds_count": len(group.rounds),
+                            "clan_tag": clan_in_group.tag,
+                            "clan_name": clan_in_group.name,
+                            "clan_level": clan_in_group.level,
+                            "badge_url": clan_in_group.badge.medium,
+                            "roster_size": len(clan_in_group.members)
+                        })
+            except coc.NotFound:
+                print("Keine aktive CWL-Gruppe gefunden (Nicht CWL Woche?).")
+            except Exception as e:
+                print(f"CWL Fehler: {e}")
+
+            # 3.4 Raid Log (Clanstadt)
             try:
                 if hasattr(client, "get_raid_log"):
                     raid_log = await client.get_raid_log(clan.tag, limit=5)
                     for raid in raid_log:
                         results["clan_capital_raids"].append({
-                            "start_time": raid.start_time.time,
-                            "end_time": raid.end_time.time,
+                            "start_time": str(raid.start_time.time),
+                            "end_time": str(raid.end_time.time),
                             "total_loot": raid.total_loot,
                             "destroyed_districts": raid.destroyed_district_count,
                             "raid_attacks": raid.attack_count,
                             "offensive_reward": raid.offensive_reward
                         })
-                else:
-                    print("Raid Log Funktion nicht verfügbar.")
             except Exception as e:
-                print(f"Konnte Raid Log nicht laden: {e}")
+                print(f"Raid Log Fehler: {e}")
 
     except Exception as e:
         print(f"Kritisches Problem beim Datenabruf: {e}")
-        import traceback
         traceback.print_exc()
     finally:
         await client.close()

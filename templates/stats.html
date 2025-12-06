@@ -11,7 +11,6 @@
         <div class="stats-container p-4">
             <div class="row align-items-center">
                 
-                <!-- Rathaus Bild -->
                 <div class="col-md-3 text-center mb-3 mb-md-0">
                     <div class="position-relative d-inline-block">
                         <img src="{{ th_image }}" alt="Town Hall" class="img-fluid" style="max-height: 160px; filter: drop-shadow(0 0 15px rgba(0,0,0,0.6));">
@@ -21,7 +20,6 @@
                     </div>
                 </div>
 
-                <!-- Spieler Details -->
                 <div class="col-md-9">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
@@ -29,38 +27,51 @@
                             <p class="text-muted font-monospace mb-3">{{ player.tag }}</p>
                         </div>
                         <div class="text-end">
+                            {% if player.current_season_rank and player.current_season_rank > 0 %}
+                            <span class="badge bg-primary text-white fs-6 me-2" title="Globaler Saison Rang">
+                                <i class="fa-solid fa-earth-americas me-1"></i> #{{ player.current_season_rank }}
+                            </span>
+                            {% endif %}
+                            
                             <span class="badge bg-warning text-dark fs-6">
                                 <i class="fa-solid fa-trophy me-1"></i> {{ player.trophies }}
                             </span>
                         </div>
                     </div>
 
-                    <!-- Stats Grid -->
-                    <div class="row g-3 mt-1">
+                    <div class="row g-3 mt-1 justify-content-center">
                         <div class="col-6 col-sm-3">
-                            <div class="p-2 border border-secondary rounded bg-dark text-center">
+                            <div class="p-2 border border-secondary rounded bg-dark text-center h-100 d-flex flex-column justify-content-center">
                                 <small class="text-muted d-block">XP Level</small>
                                 <span class="fw-bold text-info fs-5">{{ player.exp_level }}</span>
                             </div>
                         </div>
                         <div class="col-6 col-sm-3">
-                            <div class="p-2 border border-secondary rounded bg-dark text-center">
+                            <div class="p-2 border border-secondary rounded bg-dark text-center h-100 d-flex flex-column justify-content-center">
                                 <small class="text-muted d-block">Kriegssterne</small>
                                 <span class="fw-bold text-warning fs-5">{{ player.war_stars }}</span>
                             </div>
                         </div>
                         <div class="col-6 col-sm-3">
-                            <div class="p-2 border border-secondary rounded bg-dark text-center">
-                                <small class="text-muted d-block">Bestmarke Troph.</small>
-                                <span class="fw-bold text-warning fs-5">{{ player.best_trophies }}</span>
-                            </div>
-                        </div>
-                        <div class="col-6 col-sm-3">
-                            <div class="p-2 border border-secondary rounded bg-dark text-center">
+                            <div class="p-2 border border-secondary rounded bg-dark text-center h-100 d-flex flex-column justify-content-center">
                                 <small class="text-muted d-block">Rolle</small>
                                 <span class="fw-bold text-white fs-5 text-capitalize">{{ player.role | replace('_', ' ') }}</span>
                             </div>
                         </div>
+                        
+                        {% if player.league_name == 'Legend League' %}
+                        <div class="col-6 col-sm-3">
+                            <div class="p-2 border border-secondary rounded bg-dark text-center h-100 d-flex flex-column justify-content-center align-items-center position-relative overflow-hidden">
+                                <div style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events: none;"></div>
+                                
+                                {% if player.league_image %}
+                                    <img src="{{ player.league_image }}" alt="League" style="height: 35px; width: auto; filter: drop-shadow(0 0 5px rgba(255,255,255,0.3));" class="mb-1 position-relative">
+                                {% endif %}
+                                <span class="fw-bold text-white fs-6 position-relative" style="color: #ff4747 !important;">{{ player.league_name }}</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
                     </div>
                 </div>
             </div>
