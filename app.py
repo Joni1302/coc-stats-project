@@ -252,5 +252,13 @@ def clan():
                            war=war_data, 
                            cwl=cwl_data)
 
+@app.route("/blog")
+def blog():
+    posts = [
+        {"title": "Dashboard V1.0", "date": "04.12.2025", "category": "Update", "content": "Live!", "author": "Joni"},
+        {"title": "Clan Level 16", "date": "01.12.2025", "category": "Clan", "content": "Level Up!", "author": "Leader"}
+    ]
+    return render_template("blog.html", posts=posts)
+
 if __name__ == "__main__":
     app.run(debug=True)
