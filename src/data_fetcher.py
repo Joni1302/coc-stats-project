@@ -6,9 +6,11 @@ from src.config import COC_EMAIL, COC_PASSWORD, MY_PLAYER_TAG
 async def fetch_all_data():
     """
     Holt Daten für Spieler (inkl. Legenden-Stats), Clan und erweiterte CWL-Infos.
-    Kriegslog wurde entfernt.
+    Erzwingt das Laden von Spieldaten (Game Data).
     """
-    client = coc.Client()
+    # FIX: Wir zwingen den Client, die statischen Spieldaten IMMER zu laden.
+    # Das verhindert den "AttributeError: ... requires static game data" Fehler.
+    client = coc.Client(load_game_data=coc.LoadGameData(always=True))
     
     # Ergebnis-Container
     results = {
@@ -18,7 +20,7 @@ async def fetch_all_data():
         "player_achievements": [],
         "clan_info": {},
         "clan_members": [],
-        "clan_war_log": [], # Bleibt leer, da deaktiviert
+        "clan_war_log": [],
         "current_war": {},
         "cwl_group": [],
         "clan_capital_raids": []
@@ -30,7 +32,9 @@ async def fetch_all_data():
         
         # --- TEIL 1: SPIELER DATEN ---
         print(f"Hole Daten für Spieler {MY_PLAYER_TAG}...")
-        player = await client.get_player(MY_PLAYER_TAG)
+        
+        # Sicherheitshalber lassen wir load_game_data=True auch hier stehen
+        player = await client.get_player(MY_PLAYER_TAG, load_game_data=True)
         
         # 1.1 Basis Info
         results["player_info"] = {
@@ -80,12 +84,24 @@ async def fetch_all_data():
         
         for item, type_label in all_items:
             is_home = getattr(item, "is_home_base", True)
+            
+            # FIX: Sicherer Zugriff auf 'is_max_for_townhall'
+            # Falls die API bei einer spezifischen Einheit zickt, stürzt nicht alles ab.
+            is_maxed = False
+            try:
+                is_maxed = item.is_max_for_townhall
+            except AttributeError:
+                # Fallback, falls Game Data für dieses Item fehlt
+                is_maxed = (item.level >= item.max_level)
+            except Exception:
+                pass # Ignoriere andere Fehler bei diesem Attribut
+
             results["player_troops"].append({
                 "name": item.name,
                 "type": type_label,
                 "level": item.level,
                 "max_level": item.max_level,
-                "is_maxed": item.is_max_for_townhall,
+                "is_maxed": is_maxed,
                 "village": "Home" if is_home else "Builder"
             })
 
@@ -168,9 +184,7 @@ async def fetch_all_data():
             except Exception as e:
                 print(f"Info: Kein aktiver Krieg gefunden ({e})")
 
-            # 3.2 Kriegslog WURDE ENTFERNT
-
-            # 3.3 CWL Gruppe (Erweitert)
+            # 3.3 CWL Gruppe
             try:
                 group = await client.get_league_group(clan.tag)
                 if group:
