@@ -43,7 +43,7 @@ jobs:
           git add data/
           
           # Erzeugt einen Zeitstempel (z.B. 10.12.2025 14:00)
-          TIMESTAMP=$(date +'%d.%m.%Y %H:%M')
+          TIMESTAMP=$(TZ='Europe/Berlin' date +'%d.%m.%Y %H:%M')
           
           # Nutzt den Zeitstempel in der Nachricht
           git commit -m "📊 Stats Update: $TIMESTAMP" || echo "Keine Änderungen vorhanden"
