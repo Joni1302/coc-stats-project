@@ -6,6 +6,9 @@ on:
     - cron: '0 */2 * * *'
   workflow_dispatch: # Erlaubt dir, das Skript manuell per Button auf GitHub zu starten
 
+permissions:
+  contents: write
+
 jobs:
   update-data:
     runs-on: ubuntu-latest
@@ -34,14 +37,15 @@ jobs:
 
       - name: Commit and Push Changes
         run: |
-          git config --global user.name "GitHub Action Bot"
-          git config --global user.email "actions@github.com"
+          git config --global user.name "CoC Bot 🤖"
+          git config --global user.email "bot@coc-stats.local"
           
-          # Fügt die geänderten Dateien im data Ordner hinzu
           git add data/
           
-          # Erstellt einen Commit (nur wenn sich Daten geändert haben)
-          git commit -m "Auto-update CoC Stats data" || echo "Keine Änderungen vorhanden"
+          # Erzeugt einen Zeitstempel (z.B. 10.12.2025 14:00)
+          TIMESTAMP=$(date +'%d.%m.%Y %H:%M')
           
-          # Lädt die neuen Daten zurück in dein Repo
+          # Nutzt den Zeitstempel in der Nachricht
+          git commit -m "📊 Stats Update: $TIMESTAMP" || echo "Keine Änderungen vorhanden"
+          
           git push
