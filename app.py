@@ -278,6 +278,36 @@ def clan():
                 }
         except: pass
 
+        # 5. NEU: Clan Capital Raids laden
+    raids_data = []
+    csv_raids = os.path.join("data", "clan_capital_raids.csv")
+    if os.path.exists(csv_raids):
+        try:
+            df_r = pd.read_csv(csv_raids)
+            if not df_r.empty:
+                # In Dictionary umwandeln
+                raids_data = df_r.to_dict(orient='records')
+                
+                # Datum schön formatieren für die Anzeige
+                for raid in raids_data:
+                    try:
+                        # Wir parsen das Datum (Format aus deiner CSV)
+                        dt_start = datetime.strptime(str(raid['start_time']), '%Y-%m-%d %H:%M:%S')
+                        dt_end = datetime.strptime(str(raid['end_time']), '%Y-%m-%d %H:%M:%S')
+                        # Erstellt String wie "05.12. - 08.12."
+                        raid['date_label'] = f"{dt_start.strftime('%d.%m.')} - {dt_end.strftime('%d.%m.')}"
+                    except Exception:
+                        raid['date_label'] = "Unbekannt"
+        except Exception as e:
+            print(f"Raid Error: {e}")
+
+    return render_template("clan.html", 
+                           clan=clan_data, 
+                           members=members_data, 
+                           war=war_data, 
+                           cwl=cwl_data,
+                           raids=raids_data) # <--- HIER DAS NEUE ARGUMENT EINFÜGEN
+
     return render_template("clan.html", 
                            clan=clan_data, 
                            members=members_data, 

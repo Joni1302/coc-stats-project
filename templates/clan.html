@@ -173,6 +173,52 @@
     </div>
     {% endif %}
 
+    {% if raids %}
+    <h3 class="border-bottom pb-2 mb-4 mt-5 border-secondary">
+        <i class="fa-solid fa-city me-2 text-warning"></i>Raid Wochenenden
+    </h3>
+    
+    <div class="stats-container p-0 mb-5">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle mb-0">
+                <thead>
+                    <tr class="text-muted text-uppercase small" style="border-bottom: 1px solid #444;">
+                        <th scope="col" class="ps-4 py-3">Datum</th>
+                        <th scope="col" class="text-end">Clanstadt Gold</th>
+                        <th scope="col" class="text-end">Angriffe</th>
+                        <th scope="col" class="text-end">Distrikte</th>
+                        <th scope="col" class="text-end pe-4">Medaillen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for raid in raids %}
+                    <tr>
+                        <td class="ps-4 fw-bold text-white border-secondary">
+                            <i class="fa-regular fa-calendar me-2 text-muted"></i>{{ raid.date_label }}
+                        </td>
+                        <td class="text-end border-secondary">
+                            <span class="text-warning fw-bold fs-5">{{ "{:,}".format(raid.total_loot).replace(',', '.') }}</span>
+                            <i class="fa-solid fa-coins ms-1 text-warning small" title="Capital Gold"></i>
+                        </td>
+                        <td class="text-end border-secondary text-muted">
+                            {{ raid.raid_attacks }} <i class="fa-solid fa-khanda small"></i>
+                        </td>
+                        <td class="text-end border-secondary text-muted">
+                            {{ raid.destroyed_districts }} <i class="fa-solid fa-house-chimney-crack small"></i>
+                        </td>
+                        <td class="text-end pe-4 border-secondary">
+                            <span class="badge bg-info text-dark fs-6">
+                                {{ raid.offensive_reward }} <i class="fa-solid fa-medal"></i>
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
     <h3 class="border-bottom pb-2 mb-4 mt-5 border-secondary">
         <i class="fa-solid fa-list-ol me-2"></i>Mitglieder-Rangliste
     </h3>
