@@ -75,7 +75,7 @@ def get_asset_url(name, category):
 
 @app.route("/stats")
 def stats():
-    # 1. Historie laden (Bleibt gleich)
+    # 1. Historie laden
     conn = get_db_connection()
     try:
         historical_data = conn.execute('SELECT timestamp, trophies FROM player_stats ORDER BY timestamp ASC').fetchall()
@@ -84,29 +84,67 @@ def stats():
     finally:
         conn.close()
     
-    chart_labels = []
-    chart_values = []
-    seen_dates = set()
-
+    # --- NEU: Intelligentes Filtern für 06:00 Uhr ---
+    daily_data = {}
+    
     for row in historical_data:
         try:
-            dt = datetime.strptime(row['timestamp'], '%Y-%m-%dT%H:%M:%S.%f')
+            # Wir versuchen verschiedene Formate, um robust gegen kleine Änderungen zu sein
+            try:
+                dt = datetime.strptime(row['timestamp'], '%Y-%m-%dT%H:%M:%S.%f')
+            except ValueError:
+                # Fallback, falls keine Mikrosekunden gespeichert wurden
+                dt = datetime.strptime(row['timestamp'], '%Y-%m-%dT%H:%M:%S')
+            
             day_key = dt.strftime('%Y-%m-%d')
-            if day_key not in seen_dates:
-                seen_dates.add(day_key)
-                chart_labels.append(dt.strftime('%d.%m.'))
-                chart_values.append(row['trophies'])
-        except: continue
+            
+            if day_key not in daily_data:
+                daily_data[day_key] = []
+            
+            # Wir sammeln erst mal ALLE Einträge pro Tag
+            daily_data[day_key].append({
+                'dt': dt,
+                'trophies': row['trophies']
+            })
+        except Exception as e:
+            continue
 
-    # 2. Player Info & Legenden Stats laden (ERWEITERT)
+    chart_labels = []
+    chart_values = []
+    
+    # Jetzt gehen wir jeden Tag durch und suchen den "besten" Eintrag (nahe 6 Uhr)
+    for day in sorted(daily_data.keys()):
+        entries = daily_data[day]
+        
+        best_entry = None
+        min_diff = 24 * 3600 # Startwert: riesige Differenz
+        
+        target_hour = 6 # Hier stellen wir 6 Uhr ein
+        
+        for entry in entries:
+            # Wir erstellen ein Vergleichsdatum für diesen Tag um exakt 06:00 Uhr
+            target_time = entry['dt'].replace(hour=target_hour, minute=0, second=0, microsecond=0)
+            
+            # Wie weit ist dieser Eintrag von 6 Uhr entfernt? (in Sekunden)
+            diff = abs((entry['dt'] - target_time).total_seconds())
+            
+            # Wenn dieser Eintrag näher an 6 Uhr ist als der bisher beste -> merken!
+            if diff < min_diff:
+                min_diff = diff
+                best_entry = entry
+        
+        if best_entry:
+            chart_labels.append(best_entry['dt'].strftime('%d.%m.'))
+            chart_values.append(best_entry['trophies'])
+
+    # 2. Player Info & Legenden Stats laden (Bleibt wie vorher)
     player_info = {
         "name": "Chief", "tag": "#...", "town_hall": 1, 
         "trophies": 0, "exp_level": 0, "war_stars": 0, 
         "attack_wins": 0, "role": "member", "best_trophies": 0,
-        "current_season_rank": None # Default
+        "current_season_rank": None
     }
     
-    # Basis Info laden
     info_path = os.path.join("data", "player_info.csv")
     if os.path.exists(info_path):
         try:
@@ -115,30 +153,24 @@ def stats():
                 player_info.update(df_i.iloc[0].to_dict())
         except: pass
 
-    # NEU: Legenden Stats laden
     legend_path = os.path.join("data", "player_legend_stats.csv")
     if os.path.exists(legend_path):
         try:
             df_l = pd.read_csv(legend_path)
             if not df_l.empty:
-                # Füge die Legenden-Daten zum player_info Dictionary hinzu
                 player_info.update(df_l.iloc[0].to_dict())
         except: pass
 
-    # NEU: Liga Logik & Bild
     th_image = get_asset_url(player_info.get('town_hall', 1), "town_hall")
     
-    # Logik für Legend League
     if player_info.get('trophies', 0) > 4800:
         player_info['league_name'] = "Legend League"
-        # Dateiname aus deinem Upload (Legenden_League.png)
         player_info['league_image'] = "/static/assets/league/Legend_League.png"
     else:
-        player_info['league_name'] = "Unranked" # Oder Logik für Titan etc. erweitern
+        player_info['league_name'] = "Unranked"
         player_info['league_image'] = None
 
-
-    # 3. Truppen Kategorisieren (Bleibt gleich)
+    # 3. Truppen (Bleibt wie vorher)
     categories = {
         "heroes": [], "pets": [], "siege": [], "super": [], 
         "dark": [], "spells": [], "elixir": []
@@ -166,7 +198,7 @@ def stats():
                 categories[cat_key].append(item)
         except: pass
 
-    # 4. Fortschritt (Bleibt gleich)
+    # 4. Fortschritt (Bleibt wie vorher)
     progress = {}
     for key, items in categories.items():
         if not items:
@@ -176,7 +208,7 @@ def stats():
         total_max = sum(item['max_level'] for item in items)
         progress[key] = round((total_curr / total_max) * 100, 1) if total_max > 0 else 0
 
-    # 5. Erfolge (Bleibt gleich)
+    # 5. Erfolge (Bleibt wie vorher)
     achievements = []
     ach_path = os.path.join("data", "player_achievements.csv")
     if os.path.exists(ach_path):

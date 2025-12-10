@@ -1,0 +1,47 @@
+name: Update CoC Stats
+
+on:
+  schedule:
+    # Läuft alle 2 Stunden
+    - cron: '0 */2 * * *'
+  workflow_dispatch: # Erlaubt dir, das Skript manuell per Button auf GitHub zu starten
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Main Script
+        # Hier werden die Secrets als Umgebungsvariablen an dein Skript übergeben
+        env:
+          COC_EMAIL: ${{ secrets.COC_EMAIL }}
+          COC_PASSWORD: ${{ secrets.COC_PASSWORD }}
+          MY_PLAYER_TAG: ${{ secrets.MY_PLAYER_TAG }}
+        run: python main.py
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "actions@github.com"
+          
+          # Fügt die geänderten Dateien im data Ordner hinzu
+          git add data/
+          
+          # Erstellt einen Commit (nur wenn sich Daten geändert haben)
+          git commit -m "Auto-update CoC Stats data" || echo "Keine Änderungen vorhanden"
+          
+          # Lädt die neuen Daten zurück in dein Repo
+          git push

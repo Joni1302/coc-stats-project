@@ -5,7 +5,7 @@ Discover New Troops,3,1,1,Unlock Dragon in the Barracks,True
 Bigger Coffers,3,18,10,Upgrade a Gold Storage to level 10,True
 Gold Grab,3,2000000000,100000000,Steal 100000000 Gold,True
 Elixir Escapade,3,2000000000,100000000,Steal 100000000 elixir,True
-Heroic Heist,3,48787525,1000000,Steal 1000000 Dark Elixir,True
+Heroic Heist,3,48809545,1000000,Steal 1000000 Dark Elixir,True
 Well Seasoned,3,257630,50000,Earn 50000 points in Season Challenges,True
 Nice and Tidy,3,3687,500,"Remove 500 obstacles (trees, rocks, bushes)",True
 Empire Builder,3,14,4,Upgrade Clan Castle to level 4,True
@@ -18,26 +18,26 @@ War League Legend,3,862,250,Score 250 Stars for your clan in War League battles,
 Games Champion,3,214350,100000,Earn 100000 points in Clan Games,True
 Unbreakable,2,565,5000,Successfully defend against 5000 attacks,False
 Sweet Victory!,3,6244,1250,Achieve a total of 1250 trophies in Multiplayer battles,True
-Conqueror,3,7406,5000,Win 5000 Multiplayer battles,True
+Conqueror,3,7408,5000,Win 5000 Multiplayer battles,True
 League All-Star,3,22,1,Become a Champion!,True
 League Follower,3,34,12,Reach League Wizard 12,True
-Humiliator,3,6770,2000,Destroy 2000 Town Halls in Multiplayer battles,True
-Not So Easy This Time,3,6008,2000,Destroy 2000 weaponized Town Halls in Multiplayer battles,True
-Union Buster,3,34248,2500,Destroy 2500 Builder's Huts in Multiplayer battles,True
-Bust This!,3,25493,2500,Destroy 2500 weaponized Builder's Huts in Multiplayer battles,True
-Wall Buster,3,257698,2000,Destroy 2000 Walls in Multiplayer battles,True
-Mortar Mauler,3,26824,5000,Destroy 5000 Mortars in Multiplayer battles,True
-X-Bow Exterminator,3,25270,2500,Destroy 2500 X-Bows in Multiplayer battles,True
-Firefighter,3,17905,5000,Destroy 5000 Inferno Towers in Multiplayer battles,True
+Humiliator,3,6772,2000,Destroy 2000 Town Halls in Multiplayer battles,True
+Not So Easy This Time,3,6010,2000,Destroy 2000 weaponized Town Halls in Multiplayer battles,True
+Union Buster,3,34257,2500,Destroy 2500 Builder's Huts in Multiplayer battles,True
+Bust This!,3,25502,2500,Destroy 2500 weaponized Builder's Huts in Multiplayer battles,True
+Wall Buster,3,257766,2000,Destroy 2000 Walls in Multiplayer battles,True
+Mortar Mauler,3,26830,5000,Destroy 5000 Mortars in Multiplayer battles,True
+X-Bow Exterminator,3,25278,2500,Destroy 2500 X-Bows in Multiplayer battles,True
+Firefighter,3,17911,5000,Destroy 5000 Inferno Towers in Multiplayer battles,True
 Anti-Artillery,3,5554,2000,Destroy 2000 Eagle or Inferno Artilleries in Multiplayer battles,True
-Shattered and Scattered,3,10858,4000,Destroy 4000 Scattershots in Multiplayer battles,True
-Counterspell,3,9608,4000,Destroy 4000 Spell Towers in Multiplayer Battles,True
-Monolith Masher,3,4673,2000,Destroy 2000 Monoliths in Multiplayer Battles,True
-Multi-Archer Tower Terminator,3,5899,5000,Destroy 5000 Multi-Archer Towers in Multiplayer Battles,True
-Ricochet Cannon Crusher,3,5949,5000,Destroy 5000 Ricochet Cannons in Multiplayer Battles,True
-Firespitter Finisher,3,4006,4000,Destroy 4000 Firespitters in Multiplayer Battles,True
-Multi-Gear Tower Trampler,2,1935,2000,Destroy 2000 Multi-Gear Towers in Multiplayer Battles,False
-Crafter’s Nightmare,2,1318,2000,Destroy 2000 Crafted Defenses in Multiplayer Battles,False
+Shattered and Scattered,3,10862,4000,Destroy 4000 Scattershots in Multiplayer battles,True
+Counterspell,3,9612,4000,Destroy 4000 Spell Towers in Multiplayer Battles,True
+Monolith Masher,3,4675,2000,Destroy 2000 Monoliths in Multiplayer Battles,True
+Multi-Archer Tower Terminator,3,5904,5000,Destroy 5000 Multi-Archer Towers in Multiplayer Battles,True
+Ricochet Cannon Crusher,3,5954,5000,Destroy 5000 Ricochet Cannons in Multiplayer Battles,True
+Firespitter Finisher,3,4010,4000,Destroy 4000 Firespitters in Multiplayer Battles,True
+Multi-Gear Tower Trampler,2,1936,2000,Destroy 2000 Multi-Gear Towers in Multiplayer Battles,False
+Crafter’s Nightmare,2,1320,2000,Destroy 2000 Crafted Defenses in Multiplayer Battles,False
 Get those Goblins!,3,270,150,Win 150 Stars on the Campaign Map,True
 Supercharger,3,185,75,Supercharge buildings 75 times,True
 Crafting Connoisseur,3,89,75,Upgrade Crafted Defenses 75 times,True
