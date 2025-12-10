@@ -7,7 +7,7 @@ __pycache__/
 *.so
 
 # Ignoriere alle generierten Daten-Dateien im 'data' Ordner
-data/
+#data/
 
 # Distribution / packaging
 .Python

@@ -1,0 +1,89 @@
+name,type,level,max_level,is_maxed,village
+Barbarian,Troop,12,12,True,Home
+Archer,Troop,13,13,True,Home
+Goblin,Troop,9,9,True,Home
+Giant,Troop,13,14,False,Home
+Wall Breaker,Troop,13,14,False,Home
+Balloon,Troop,12,12,True,Home
+Wizard,Troop,14,14,True,Home
+Healer,Troop,11,11,True,Home
+Dragon,Troop,12,12,True,Home
+P.E.K.K.A,Troop,13,13,True,Home
+Minion,Troop,14,14,True,Home
+Hog Rider,Troop,14,14,True,Home
+Valkyrie,Troop,11,11,True,Home
+Golem,Troop,14,14,True,Home
+Witch,Troop,7,7,True,Home
+Lava Hound,Troop,7,7,True,Home
+Bowler,Troop,10,10,True,Home
+Baby Dragon,Troop,11,11,True,Home
+Miner,Troop,11,12,False,Home
+Super Barbarian,Troop,1,8,False,Home
+Super Wall Breaker,Troop,1,10,False,Home
+Raged Barbarian,Troop,20,20,True,Builder
+Sneaky Archer,Troop,20,20,True,Builder
+Beta Minion,Troop,20,20,True,Builder
+Boxer Giant,Troop,20,20,True,Builder
+Bomber,Troop,20,20,True,Builder
+Power P.E.K.K.A,Troop,20,20,True,Builder
+Cannon Cart,Troop,20,20,True,Builder
+Drop Ship,Troop,20,20,True,Builder
+Baby Dragon,Troop,20,20,True,Builder
+Night Witch,Troop,20,20,True,Builder
+Wall Wrecker,Troop,5,6,False,Home
+Battle Blimp,Troop,5,5,True,Home
+Yeti,Troop,7,7,True,Home
+Ice Golem,Troop,9,9,True,Home
+Electro Dragon,Troop,9,9,True,Home
+Stone Slammer,Troop,5,5,True,Home
+Dragon Rider,Troop,6,6,True,Home
+Hog Glider,Troop,20,20,True,Builder
+Siege Barracks,Troop,5,5,True,Home
+Headhunter,Troop,3,3,True,Home
+Log Launcher,Troop,5,5,True,Home
+Flame Flinger,Troop,5,5,True,Home
+Battle Drill,Troop,5,5,True,Home
+Electro Titan,Troop,4,4,True,Home
+Apprentice Warden,Troop,4,4,True,Home
+Electrofire Wizard,Troop,20,20,True,Builder
+Root Rider,Troop,3,3,True,Home
+Druid,Troop,5,5,True,Home
+Thrower,Troop,3,4,False,Home
+Troop Launcher,Troop,4,4,True,Home
+Furnace,Troop,4,4,True,Home
+Meteor Golem,Troop,3,3,True,Home
+Barbarian King,Hero,100,105,False,Home
+Archer Queen,Hero,101,105,False,Home
+Minion Prince,Hero,90,95,False,Home
+Grand Warden,Hero,76,80,False,Home
+Royal Champion,Hero,55,55,True,Home
+Battle Machine,Hero,35,35,True,Builder
+Battle Copter,Hero,35,35,True,Builder
+Lightning Spell,Spell,12,13,False,Home
+Healing Spell,Spell,11,12,False,Home
+Rage Spell,Spell,6,6,True,Home
+Jump Spell,Spell,5,5,True,Home
+Freeze Spell,Spell,7,7,True,Home
+Clone Spell,Spell,8,8,True,Home
+Invisibility Spell,Spell,4,4,True,Home
+Recall Spell,Spell,6,6,True,Home
+Revive Spell,Spell,4,4,True,Home
+Totem Spell,Spell,4,4,True,Home
+Poison Spell,Spell,12,12,True,Home
+Earthquake Spell,Spell,5,5,True,Home
+Haste Spell,Spell,6,7,False,Home
+Skeleton Spell,Spell,8,8,True,Home
+Bat Spell,Spell,7,8,False,Home
+Overgrowth Spell,Spell,4,4,True,Home
+Ice Block Spell,Spell,5,5,True,Home
+L.A.S.S.I,Pet,15,15,True,Home
+Mighty Yak,Pet,15,15,True,Home
+Electro Owl,Pet,15,15,True,Home
+Unicorn,Pet,15,15,True,Home
+Phoenix,Pet,10,10,True,Home
+Poison Lizard,Pet,14,15,False,Home
+Diggy,Pet,10,10,True,Home
+Frosty,Pet,15,15,True,Home
+Spirit Fox,Pet,10,10,True,Home
+Angry Jelly,Pet,10,10,True,Home
+Sneezy,Pet,10,10,True,Home
