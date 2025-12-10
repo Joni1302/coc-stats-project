@@ -301,18 +301,58 @@ def clan():
         except Exception as e:
             print(f"Raid Error: {e}")
 
-    return render_template("clan.html", 
-                           clan=clan_data, 
-                           members=members_data, 
-                           war=war_data, 
-                           cwl=cwl_data,
-                           raids=raids_data) # <--- HIER DAS NEUE ARGUMENT EINFÜGEN
+            # 6. NEU: Kriegs-Historie aus der Datenbank laden
+    war_history = []
+    try:
+        conn = get_db_connection()
+        # Wir holen die letzten 20 Kriege, sortiert nach Datum (neueste zuerst)
+        rows = conn.execute('SELECT * FROM war_history ORDER BY end_time DESC LIMIT 20').fetchall()
+        conn.close()
+        
+        for row in rows:
+            # SQLite Row in normales Dictionary umwandeln
+            war = dict(row)
+            
+            # Datum schön formatieren (z.B. "10.12.2025")
+            try:
+                # Wir entfernen evtl. vorhandene Zeitzonen-Infos für einfaches Parsing
+                clean_time = war['end_time'].split('+')[0] 
+                dt = datetime.strptime(clean_time, '%Y-%m-%dT%H:%M:%S.%f')
+            except ValueError:
+                try:
+                    # Fallback für Format ohne Millisekunden
+                    dt = datetime.strptime(clean_time, '%Y-%m-%dT%H:%M:%S')
+                except:
+                    dt = datetime.now() # Fallback
+
+            war['date_label'] = dt.strftime('%d.%m.%Y')
+            
+            # Ergebnis für die Anzeige aufbereiten (Farbe & Text)
+            if war['result'] == 'win':
+                war['result_badge'] = 'bg-success'
+                war['result_text'] = 'SIEG'
+            elif war['result'] == 'lose':
+                war['result_badge'] = 'bg-danger'
+                war['result_text'] = 'NIEDERLAGE'
+            elif war['result'] == 'tie':
+                war['result_badge'] = 'bg-secondary'
+                war['result_text'] = 'REMIS'
+            else:
+                war['result_badge'] = 'bg-dark border border-secondary'
+                war['result_text'] = 'UNKNOWN'
+                
+            war_history.append(war)
+            
+    except Exception as e:
+        print(f"Fehler beim Laden der War History: {e}")
 
     return render_template("clan.html", 
                            clan=clan_data, 
                            members=members_data, 
                            war=war_data, 
-                           cwl=cwl_data)
+                           cwl=cwl_data,
+                           raids=raids_data,
+                           war_history=war_history) # <--- HIER DAS NEUE ARGUMENT EINFÜGEN
 
 @app.route("/blog")
 def blog():

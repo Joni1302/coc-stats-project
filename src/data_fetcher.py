@@ -163,7 +163,7 @@ async def fetch_all_data():
                 })
 
             # --- TEIL 3: KRIEGE & CWL ---
-            
+
             # 3.1 Aktueller Krieg
             try:
                 war = await client.get_clan_war(clan.tag)
@@ -172,7 +172,7 @@ async def fetch_all_data():
                         "state": war.state,
                         "battle_modifier": war.battle_modifier.name if war.battle_modifier else "None",
                         "team_size": war.team_size,
-                        # Wir setzen die Zeitzone erst auf UTC und konvertieren dann zu Berlin
+                        # Hier die Zeitzonen-Korrektur für die CSV (Wichtig für das Banner!)
                         "start_time": war.start_time.time.replace(tzinfo=timezone.utc).astimezone(ZoneInfo("Europe/Berlin")).strftime('%d.%m.%Y %H:%M') if war.start_time else None,
                         "end_time": war.end_time.time.replace(tzinfo=timezone.utc).astimezone(ZoneInfo("Europe/Berlin")).strftime('%d.%m.%Y %H:%M') if war.end_time else None,
                         "opponent_name": war.opponent.name if war.opponent else "Unknown",
@@ -186,6 +186,54 @@ async def fetch_all_data():
                 print("Aktueller Krieg nicht abrufbar (Kriegslog ist privat).")
             except Exception as e:
                 print(f"Info: Kein aktiver Krieg gefunden ({e})")
+            
+            try:
+                # Wir holen mehr Einträge, falls einige fehlerhaft sind und übersprungen werden
+                war_log = await client.get_war_log(clan.tag, limit=40)
+                
+                for war in war_log:
+                    # FIX: Prüfen, ob opponent überhaupt existiert
+                    if war.opponent:
+                        opp_name = war.opponent.name
+                        opp_tag = war.opponent.tag
+                        opp_stars = war.opponent.stars
+                        opp_dest = war.opponent.destruction
+                    else:
+                        opp_name = "Unbekannt"
+                        opp_tag = "#UNKNOWN"
+                        opp_stars = 0
+                        opp_dest = 0.0
+
+                    # Zeit sicher konvertieren
+                    try:
+                        end_time_berlin = war.end_time.time.replace(tzinfo=timezone.utc).astimezone(ZoneInfo("Europe/Berlin")).isoformat()
+                    except Exception:
+                        # Fallback, falls Zeitformat anders ist
+                        end_time_berlin = str(war.end_time)
+
+                    # Ergebnis bestimmen (Enum in String umwandeln)
+                    if war.result:
+                        # Versucht .name zu nutzen (für Enums), sonst str() als Fallback
+                        result = getattr(war.result, "name", str(war.result))
+                    else:
+                        result = "unknown"
+                    
+                    results["clan_war_log"].append({
+                        "end_time": end_time_berlin,
+                        "opponent_name": opp_name,
+                        "opponent_tag": opp_tag,
+                        "result": result,
+                        "team_size": war.team_size,
+                        "clan_stars": war.clan.stars,
+                        "opponent_stars": opp_stars,
+                        "clan_destruction": war.clan.destruction,
+                        "opponent_destruction": opp_dest
+                    })
+                    
+            except coc.PrivateWarLog:
+                print("⚠️ Der Kriegslog dieses Clans ist PRIVAT.")
+            except Exception as e:
+                print(f"Info: War Log konnte für einen Eintrag nicht gelesen werden: {e}")
 
             # 3.3 CWL Gruppe
             try:

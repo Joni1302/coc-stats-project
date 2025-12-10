@@ -1,7 +1,7 @@
 import asyncio
 from src.data_fetcher import fetch_all_data
 from src.csv_manager import save_data
-from src.database_manager import init_db, save_player_snapshot, save_clan_snapshot
+from src.database_manager import init_db, save_player_snapshot, save_clan_snapshot, save_war_log_to_db
 
 async def main():
     print("--- Clash of Clans Data Mining Gestartet ---")
@@ -23,6 +23,14 @@ async def main():
     
     if clan_info:
         save_clan_snapshot(clan_info)
+
+    if clan_info:
+        save_clan_snapshot(clan_info)
+        
+        # NEU: War Log speichern
+        war_log_data = all_data.get("clan_war_log")
+        if war_log_data:
+            save_war_log_to_db(war_log_data)
 
     # 4. Daten in CSV Dateien speichern (Übersicht)
     print("\n--- Speichere Daten in CSV Dateien ---")

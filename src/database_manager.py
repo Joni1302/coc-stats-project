@@ -40,6 +40,20 @@ def init_db():
                 war_wins INTEGER
             )
         """)
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS war_history (
+                end_time TEXT PRIMARY KEY,
+                opponent_name TEXT,
+                opponent_tag TEXT,
+                result TEXT,
+                team_size INTEGER,
+                clan_stars INTEGER,
+                opponent_stars INTEGER,
+                clan_destruction REAL,
+                opponent_destruction REAL
+            )
+        """)
         conn.commit()
         print(f"✅ Datenbankstruktur in '{DB_PATH}' initialisiert.")
     
@@ -126,6 +140,54 @@ def save_clan_snapshot(clan_data):
     finally:
         if conn:
             conn.close()
+
+# --- NEU: Funktion zum Speichern des Kriegslogs ---
+def save_war_log_to_db(war_log_list):
+    """Speichert eine Liste von Kriegen in die DB. Ignoriert Duplikate."""
+    if not war_log_list:
+        return
+
+    conn = None
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        new_entries = 0
+        for war in war_log_list:
+            try:
+                data_tuple = (
+                    war['end_time'], # Unique Key
+                    war['opponent_name'],
+                    war['opponent_tag'],
+                    war['result'], # 'win', 'lose', 'tie'
+                    war['team_size'],
+                    war['clan_stars'],
+                    war['opponent_stars'],
+                    war['clan_destruction'],
+                    war['opponent_destruction']
+                )
+                
+                # INSERT OR IGNORE: Wenn der Krieg (basierend auf Endzeit) schon da ist, passiert nichts.
+                cursor.execute("""
+                    INSERT OR IGNORE INTO war_history 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, data_tuple)
+                
+                if cursor.rowcount > 0:
+                    new_entries += 1
+            except Exception as e:
+                print(f"Fehler bei einzelnem Krieg: {e}")
+
+        conn.commit()
+        if new_entries > 0:
+            print(f"✅ {new_entries} neue Kriege in die Historie aufgenommen.")
+        else:
+            print("ℹ️ Keine neuen Kriege für die Historie gefunden.")
+
+    except sqlite3.Error as e:
+        print(f"Datenbankfehler beim War Log: {e}")
+    finally:
+        if conn: conn.close()
 
 if __name__ == '__main__':
     # Test-Funktion: Kann direkt ausgeführt werden, um die DB zu erstellen
