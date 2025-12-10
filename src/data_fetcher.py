@@ -2,6 +2,8 @@ import coc
 import asyncio
 import traceback
 from src.config import COC_EMAIL, COC_PASSWORD, MY_PLAYER_TAG
+from datetime import timezone
+from zoneinfo import ZoneInfo
 
 async def fetch_all_data():
     """
@@ -170,8 +172,9 @@ async def fetch_all_data():
                         "state": war.state,
                         "battle_modifier": war.battle_modifier.name if war.battle_modifier else "None",
                         "team_size": war.team_size,
-                        "start_time": war.start_time.time.strftime('%d.%m.%Y %H:%M') if war.start_time else None,
-                        "end_time": war.end_time.time.strftime('%d.%m.%Y %H:%M') if war.end_time else None,
+                        # Wir setzen die Zeitzone erst auf UTC und konvertieren dann zu Berlin
+                        "start_time": war.start_time.time.replace(tzinfo=timezone.utc).astimezone(ZoneInfo("Europe/Berlin")).strftime('%d.%m.%Y %H:%M') if war.start_time else None,
+                        "end_time": war.end_time.time.replace(tzinfo=timezone.utc).astimezone(ZoneInfo("Europe/Berlin")).strftime('%d.%m.%Y %H:%M') if war.end_time else None,
                         "opponent_name": war.opponent.name if war.opponent else "Unknown",
                         "opponent_tag": war.opponent.tag if war.opponent else "Unknown",
                         "clan_stars": war.clan.stars,
