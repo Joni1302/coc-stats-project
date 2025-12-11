@@ -135,14 +135,22 @@
     </div>
 
     {% elif war.state in ['in War', 'preparation', 'In War', 'Preparation'] %}
+    
+    {# Hilfsvariable: Prüfen ob Vorbereitung ist #}
+    {% set is_prep = war.state in ['preparation', 'Preparation'] %}
+
     <div class="row mb-5">
         <div class="col-12">
-            <div class="stats-container p-0 overflow-hidden position-relative border-danger" style="border-width: 1px; border-style: solid;">
+            <div class="stats-container p-0 overflow-hidden position-relative {{ 'border-primary' if is_prep else 'border-danger' }}" 
+                 style="border-width: 1px; border-style: solid;">
                 
-                <div class="p-3 text-center position-relative" style="background: linear-gradient(90deg, #b71c1c 0%, #d32f2f 100%);">
+                <div class="p-3 text-center position-relative" 
+                     style="background: {{ 'linear-gradient(90deg, #0d47a1 0%, #1976d2 100%)' if is_prep else 'linear-gradient(90deg, #b71c1c 0%, #d32f2f 100%)' }};">
+                    
                     <span class="badge bg-dark mb-2">Clan Krieg</span>
+                    
                     <h3 class="text-white fw-bold mb-0">
-                        {% if war.state in ['preparation', 'Preparation'] %}
+                        {% if is_prep %}
                             Vorbereitungstag
                         {% else %}
                             Kampftag läuft!
@@ -151,20 +159,37 @@
                     <small class="text-white-50">{{ war.start_time }} - {{ war.end_time }}</small>
                 </div>
 
-                <div class="row g-0 align-items-center py-4 px-2">
+                <div class="row g-0 align-items-center py-4 px-2" style="background-color: #1a1a1a;">
                     <div class="col-5 text-center">
                         <h4 class="fw-bold text-white mb-1">{{ clan.name }}</h4>
                         <div class="d-flex justify-content-center align-items-center gap-3">
-                            <div class="text-warning"><i class="fa-solid fa-star fs-5"></i> <span class="fs-4 fw-bold">{{ war.clan_stars }}</span></div>
-                            <div class="text-info"><i class="fa-solid fa-fire fs-5"></i> <span class="fs-4 fw-bold">{{ "%.1f"|format(war.clan_destruction|float) }}%</span></div>
+                            <div class="text-warning">
+                                <i class="fa-solid fa-star fs-5"></i> 
+                                <span class="fs-4 fw-bold">{{ war.clan_stars }}</span>
+                            </div>
+                            <div class="text-info">
+                                <i class="fa-solid fa-fire fs-5"></i> 
+                                <span class="fs-4 fw-bold">{{ "%.1f"|format(war.clan_destruction|float) }}%</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-2 text-center"><span class="fw-bold fs-2 text-muted fst-italic">VS</span></div>
+                    
+                    <div class="col-2 text-center">
+                        <span class="fw-bold fs-1 text-muted fst-italic" style="opacity: 0.5;">VS</span>
+                    </div>
+                    
                     <div class="col-5 text-center">
-                        <h4 class="fw-bold text-danger mb-1">{{ war.opponent_name }}</h4>
+                        <h4 class="fw-bold {{ 'text-primary' if is_prep else 'text-danger' }} mb-1">{{ war.opponent_name }}</h4>
+                        
                         <div class="d-flex justify-content-center align-items-center gap-3">
-                            <div class="text-warning"><span class="fs-4 fw-bold">{{ war.opponent_stars }}</span> <i class="fa-solid fa-star fs-5"></i></div>
-                            <div class="text-info"><span class="fs-4 fw-bold">{{ "%.1f"|format(war.opponent_destruction|float) }}%</span> <i class="fa-solid fa-fire fs-5"></i></div>
+                            <div class="text-warning">
+                                <span class="fs-4 fw-bold">{{ war.opponent_stars }}</span> 
+                                <i class="fa-solid fa-star fs-5"></i>
+                            </div>
+                            <div class="text-info">
+                                <span class="fs-4 fw-bold">{{ "%.1f"|format(war.opponent_destruction|float) }}%</span> 
+                                <i class="fa-solid fa-fire fs-5"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
