@@ -4,6 +4,7 @@ import os
 import sqlite3 
 import json
 from datetime import datetime
+import coc
 
 app = Flask(__name__)
 
@@ -84,24 +85,34 @@ def stats():
     finally:
         conn.close()
     
-    # --- NEU: Intelligentes Filtern für 06:00 Uhr ---
+# --- NEU: Saison-Filter & 06:00 Uhr Logik ---
+    
+    # Saison-Start ermitteln (UTC)
+    try:
+        # get_season_start() gibt den Beginn der aktuellen Saison zurück (letzter Montag im Monat)
+        # .replace(tzinfo=None) macht es vergleichbar mit unseren DB-Zeitstempeln (die oft naiv gespeichert sind)
+        season_start = coc.utils.get_season_start().replace(tzinfo=None)
+    except Exception as e:
+        print(f"Konnte Saison-Start nicht ermitteln: {e}")
+        season_start = datetime.min # Fallback: Alles anzeigen
+
     daily_data = {}
     
     for row in historical_data:
         try:
-            # Wir versuchen verschiedene Formate, um robust gegen kleine Änderungen zu sein
             try:
                 dt = datetime.strptime(row['timestamp'], '%Y-%m-%dT%H:%M:%S.%f')
             except ValueError:
-                # Fallback, falls keine Mikrosekunden gespeichert wurden
                 dt = datetime.strptime(row['timestamp'], '%Y-%m-%dT%H:%M:%S')
             
+            # WICHTIG: Hier filtern wir alte Daten raus!
+            if dt < season_start:
+                continue
+
             day_key = dt.strftime('%Y-%m-%d')
-            
             if day_key not in daily_data:
                 daily_data[day_key] = []
             
-            # Wir sammeln erst mal ALLE Einträge pro Tag
             daily_data[day_key].append({
                 'dt': dt,
                 'trophies': row['trophies']
@@ -112,23 +123,16 @@ def stats():
     chart_labels = []
     chart_values = []
     
-    # Jetzt gehen wir jeden Tag durch und suchen den "besten" Eintrag (nahe 6 Uhr)
+    # 06:00 Uhr Filter (bleibt wie vorher, nur jetzt auf den gefilterten Daten)
     for day in sorted(daily_data.keys()):
         entries = daily_data[day]
-        
         best_entry = None
-        min_diff = 24 * 3600 # Startwert: riesige Differenz
-        
-        target_hour = 6 # Hier stellen wir 6 Uhr ein
+        min_diff = 24 * 3600
+        target_hour = 6
         
         for entry in entries:
-            # Wir erstellen ein Vergleichsdatum für diesen Tag um exakt 06:00 Uhr
             target_time = entry['dt'].replace(hour=target_hour, minute=0, second=0, microsecond=0)
-            
-            # Wie weit ist dieser Eintrag von 6 Uhr entfernt? (in Sekunden)
             diff = abs((entry['dt'] - target_time).total_seconds())
-            
-            # Wenn dieser Eintrag näher an 6 Uhr ist als der bisher beste -> merken!
             if diff < min_diff:
                 min_diff = diff
                 best_entry = entry
