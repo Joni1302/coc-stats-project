@@ -7,7 +7,7 @@ Gold Grab,3,2000000000,100000000,Steal 100000000 Gold,True
 Elixir Escapade,3,2000000000,100000000,Steal 100000000 elixir,True
 Heroic Heist,3,48948044,1000000,Steal 1000000 Dark Elixir,True
 Well Seasoned,3,257670,50000,Earn 50000 points in Season Challenges,True
-Nice and Tidy,3,3688,500,"Remove 500 obstacles (trees, rocks, bushes)",True
+Nice and Tidy,3,3689,500,"Remove 500 obstacles (trees, rocks, bushes)",True
 Empire Builder,3,14,4,Upgrade Clan Castle to level 4,True
 Clan War Wealth,3,2000000000,100000000,Collect 100000000 Gold from the Clan Castle,True
 Friend in Need,3,237452,25000,Donate 25000 capacity worth of reinforcements to Clanmates,True
@@ -40,7 +40,7 @@ Multi-Gear Tower Trampler,2,1949,2000,Destroy 2000 Multi-Gear Towers in Multipla
 Crafter’s Nightmare,2,1330,2000,Destroy 2000 Crafted Defenses in Multiplayer Battles,False
 Get those Goblins!,3,270,150,Win 150 Stars on the Campaign Map,True
 Supercharger,3,185,75,Supercharge buildings 75 times,True
-Crafting Connoisseur,3,89,75,Upgrade Crafted Defenses 75 times,True
+Crafting Connoisseur,3,90,75,Upgrade Crafted Defenses 75 times,True
 Dragon Slayer,1,1,1,Slay the Giant Dragon on the Campaign Map,False
 Ungrateful Child,1,1,1,Defeat M.O.M.M.A on the Campaign Map,False
 Superb Work,3,403,250,Boost a Super Troop 250 times,True
