@@ -3,7 +3,7 @@ Barbarian,Troop,12,12,True,Home
 Archer,Troop,13,13,True,Home
 Goblin,Troop,9,9,True,Home
 Giant,Troop,13,14,False,Home
-Wall Breaker,Troop,13,14,False,Home
+Wall Breaker,Troop,14,14,True,Home
 Balloon,Troop,12,12,True,Home
 Wizard,Troop,14,14,True,Home
 Healer,Troop,11,11,True,Home
@@ -73,7 +73,7 @@ Poison Spell,Spell,12,12,True,Home
 Earthquake Spell,Spell,5,5,True,Home
 Haste Spell,Spell,6,7,False,Home
 Skeleton Spell,Spell,8,8,True,Home
-Bat Spell,Spell,7,8,False,Home
+Bat Spell,Spell,8,8,True,Home
 Overgrowth Spell,Spell,4,4,True,Home
 Ice Block Spell,Spell,5,5,True,Home
 L.A.S.S.I,Pet,15,15,True,Home
