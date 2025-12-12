@@ -6,7 +6,7 @@ Bigger Coffers,3,18,10,Upgrade a Gold Storage to level 10,True
 Gold Grab,3,2000000000,100000000,Steal 100000000 Gold,True
 Elixir Escapade,3,2000000000,100000000,Steal 100000000 elixir,True
 Heroic Heist,3,49053689,1000000,Steal 1000000 Dark Elixir,True
-Well Seasoned,3,257880,50000,Earn 50000 points in Season Challenges,True
+Well Seasoned,3,257980,50000,Earn 50000 points in Season Challenges,True
 Nice and Tidy,3,3691,500,"Remove 500 obstacles (trees, rocks, bushes)",True
 Empire Builder,3,14,4,Upgrade Clan Castle to level 4,True
 Clan War Wealth,3,2000000000,100000000,Collect 100000000 Gold from the Clan Castle,True
@@ -48,7 +48,7 @@ Master Engineering,3,10,8,Upgrade Builder Hall to level 8,True
 Hidden Treasures,3,1,1,Rebuild Battle Machine,True
 High Gear,3,3,3,Gear Up 3 buildings using the Master Builder,True
 Next Generation Model,3,1,1,Unlock Power P.E.K.K.A in the Builder Barracks,True
-Un-Build It,3,3102,2000,Destroy 2000 Builder Halls in Builder Battles,True
+Un-Build It,3,3103,2000,Destroy 2000 Builder Halls in Builder Battles,True
 Champion Builder,3,6106,3000,Achieve a total of 3000 trophies in Builder Battles,True
 Aggressive Capitalism,3,4014190,1000000,Loot 1000000 Capital Gold during Raid attacks,True
 Most Valuable Clanmate,3,5060188,2000000,Contribute 2000000 Capital Gold to upgrades in the Clan Capital,True
