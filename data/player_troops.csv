@@ -55,7 +55,7 @@ Meteor Golem,Troop,3,3,True,Home
 Barbarian King,Hero,100,105,False,Home
 Archer Queen,Hero,101,105,False,Home
 Minion Prince,Hero,90,95,False,Home
-Grand Warden,Hero,78,80,False,Home
+Grand Warden,Hero,80,80,True,Home
 Royal Champion,Hero,55,55,True,Home
 Battle Machine,Hero,35,35,True,Builder
 Battle Copter,Hero,35,35,True,Builder
