@@ -18,6 +18,8 @@ Lava Hound,Troop,7,7,True,Home
 Bowler,Troop,10,10,True,Home
 Baby Dragon,Troop,11,11,True,Home
 Miner,Troop,11,12,False,Home
+Super Barbarian,Troop,1,8,False,Home
+Super Wall Breaker,Troop,1,10,False,Home
 Raged Barbarian,Troop,20,20,True,Builder
 Sneaky Archer,Troop,20,20,True,Builder
 Beta Minion,Troop,20,20,True,Builder
